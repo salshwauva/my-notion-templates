@@ -1,107 +1,141 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <style>
+        /* Modern, non-pixelated font */
         @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;600&display=swap');
 
         body {
-            background-color: transparent; 
+            background-color: transparent; /* Seamless blend with Notion */
             margin: 0;
-            padding: 5px;
+            padding: 10px;
             font-family: 'Inter', sans-serif;
             display: flex;
             flex-direction: column;
+            align-items: flex-start;
             gap: 10px;
         }
 
+        /* The Frosted Glass "Pill" Style */
         .event-pill {
             display: flex;
             justify-content: space-between;
             align-items: center;
-            padding: 10px 16px;
-            border-radius: 14px;
+            padding: 10px 18px;
+            border-radius: 16px;
             font-size: 13px;
             color: white;
             font-weight: 600;
+            width: 280px; /* Small/Compact footprint */
             
-            /* Frosted Glass Effect */
-            backdrop-filter: blur(10px);
-            -webkit-backdrop-filter: blur(10px);
+            /* Glassmorphism Effect */
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
             border: 1px solid rgba(255, 255, 255, 0.2);
             box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
             
-            max-width: 280px; /* Small and compact */
-            transition: transform 0.2s ease;
+            transition: transform 0.2s ease, box-shadow 0.2s ease;
         }
 
         .event-pill:hover {
             transform: scale(1.03);
+            box-shadow: 0 0 15px rgba(255, 255, 255, 0.2);
         }
 
         .event-time {
             font-size: 10px;
-            opacity: 0.7;
-            margin-left: 12px;
+            opacity: 0.8;
             font-weight: 400;
             text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        #loading {
+            color: rgba(255, 255, 255, 0.5);
+            font-size: 12px;
+            letter-spacing: 1px;
         }
     </style>
 </head>
 <body>
 
-    <div id="calendar-content"></div>
+    <div id="calendar-content">
+        <div id="loading">FETCHING BLOCKS...</div>
+    </div>
 
     <script>
-        const API_KEY = 'AIzaSyD0x1_dYTIdaCjAY-mJ_oYwDXXKj8y16R0';
-        const CALENDAR_ID = 's.alshwauva@gmail.com';
+        /* --- CONFIGURATION --- */
+        const API_KEY = 'AIzaSyD0x1_dYTIdaCjAY-mJ_oYwDXXKj8y16R0'; //
 
-        // Glassmorphism Color Mapper (Semi-transparent Pastel/Neon)
-        const colorMap = {
-            "1": "rgba(162, 210, 255, 0.4)", // Pastel Blue
-            "2": "rgba(185, 251, 192, 0.4)", // Mint
-            "3": "rgba(255, 175, 204, 0.4)", // Pastel Pink
-            "4": "rgba(255, 207, 210, 0.4)", // Soft Red
-            "5": "rgba(253, 228, 207, 0.4)", // Peach
-            "6": "rgba(241, 192, 232, 0.4)", // Soft Purple
-            "7": "rgba(1, 205, 254, 0.4)",   // Neon Cyan
-            "8": "rgba(255, 113, 206, 0.4)", // Neon Pink
-            "9": "rgba(185, 103, 255, 0.4)", // Electric Purple
-            "10": "rgba(207, 186, 240, 0.4)",// Lavender
-            "11": "rgba(255, 251, 150, 0.4)" // Neon Yellow
-        };
+        // 1. Add your Calendar IDs and pick a color for each
+        // Use rgba for that transparent pastel/neon look.
+        const calendarConfigs = [
+            { id: 'primary', color: 'rgba(255, 113, 206, 0.4)' }, // Neon Pink
+            { id: 'work_id@group.calendar.google.com', color: 'rgba(1, 205, 254, 0.4)' }, // Neon Cyan
+            { id: 'hobby_id@group.calendar.google.com', color: 'rgba(185, 103, 255, 0.4)' } // Electric Purple
+        ];
 
-        async function fetchCalendar() {
+        async function fetchAllCalendars() {
             const startOfDay = new Date();
             startOfDay.setHours(0,0,0,0);
-            const url = `https://www.googleapis.com/calendar/v3/calendars/${CALENDAR_ID}/events?key=${API_KEY}&timeMin=${startOfDay.toISOString()}&maxResults=6&singleEvents=true&orderBy=startTime`;
+            const timeMin = startOfDay.toISOString();
             
-            try {
-                const response = await fetch(url);
-                const data = await response.json();
-                const container = document.getElementById('calendar-content');
-                container.innerHTML = '';
+            let allEvents = [];
 
-                data.items.forEach(event => {
-                    const start = new Date(event.start.dateTime || event.start.date);
-                    const timeStr = start.toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'});
+            for (const config of calendarConfigs) {
+                const url = `https://www.googleapis.com/calendar/v3/calendars/${encodeURIComponent(config.id)}/events?key=${API_KEY}&timeMin=${timeMin}&maxResults=10&singleEvents=true&orderBy=startTime`;
+                
+                try {
+                    const response = await fetch(url);
+                    const data = await response.json();
                     
-                    // Pull the Google Color ID, or default to soft purple glass
-                    const bgColor = colorMap[event.colorId] || "rgba(255, 255, 255, 0.15)"; 
-                    
-                    const pill = document.createElement('div');
-                    pill.className = 'event-pill';
-                    pill.style.backgroundColor = bgColor;
-                    pill.innerHTML = `
-                        <span>${event.summary}</span>
-                        <span class="event-time">${timeStr}</span>
-                    `;
-                    container.appendChild(pill);
-                });
-            } catch (e) {
-                console.error("Sync Error");
+                    if (data.items) {
+                        // Tag events with the color assigned to their specific calendar
+                        const eventsWithColor = data.items.map(event => ({
+                            ...event,
+                            displayColor: config.color
+                        }));
+                        allEvents = allEvents.concat(eventsWithColor);
+                    }
+                } catch (e) {
+                    console.error("Error fetching: " + config.id);
+                }
             }
+
+            // 2. Sort all combined events by their start time
+            allEvents.sort((a, b) => {
+                const dateA = new Date(a.start.dateTime || a.start.date);
+                const dateB = new Date(b.start.dateTime || b.start.date);
+                return dateA - dateB;
+            });
+
+            const container = document.getElementById('calendar-content');
+            container.innerHTML = '';
+
+            if (allEvents.length === 0) {
+                container.innerHTML = '<div style="color:white; opacity:0.5; font-size:12px;">No blocks scheduled.</div>';
+                return;
+            }
+
+            // 3. Render only the first 8 events
+            allEvents.slice(0, 8).forEach(event => {
+                const start = new Date(event.start.dateTime || event.start.date);
+                const timeStr = start.toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'});
+                
+                const pill = document.createElement('div');
+                pill.className = 'event-pill';
+                pill.style.backgroundColor = event.displayColor;
+                pill.innerHTML = `
+                    <span>${event.summary}</span>
+                    <span class="event-time">${timeStr}</span>
+                `;
+                container.appendChild(pill);
+            });
         }
-        fetchCalendar();
+
+        fetchAllCalendars();
     </script>
 </body>
 </html>
