@@ -1,33 +1,49 @@
 <!DOCTYPE html>
 <html>
 <head>
-<style>
-  body { 
-    font-family: 'Inter', sans-serif; 
-    background-color: transparent; 
-    color: #37352f; 
-    padding: 10px;
-  }
-  .container {
-    border: 1px solid #f1f1f1;
-    border-radius: 15px;
-    padding: 20px;
-    background: #ffffff;
-    box-shadow: 0 4px 6px rgba(0,0,0,0.05);
-  }
-  h2 { font-style: italic; color: #b56576; border-bottom: 1px solid #f1f1f1; padding-bottom: 5px; }
-  .item { display: flex; align-items: center; margin: 10px 0; font-size: 14px; }
-  .dot { height: 10px; width: 10px; border-radius: 50%; margin-right: 10px; }
-</style>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Space+Mono&display=swap');
+        :root { --pink: #ff71ce; --blue: #01cdfe; --purple: #b967ff; }
+        body { background: transparent; font-family: 'Space Mono', monospace; color: var(--blue); }
+        .widget { border: 2px solid var(--pink); border-radius: 15px; padding: 20px; background: rgba(0,0,0,0.8); box-shadow: 0 0 15px var(--purple); }
+        .event { margin: 10px 0; padding-bottom: 5px; border-bottom: 1px solid rgba(1, 205, 254, 0.2); }
+        .time { color: var(--pink); font-size: 11px; }
+        .title { display: block; font-size: 14px; text-transform: uppercase; }
+    </style>
 </head>
 <body>
+    <div class="widget">
+        <h2 style="color:var(--purple); text-shadow: 2px 2px #000;">ＬＩＶＥ ＳＣＨＥＤ</h2>
+        <div id="calendar-content">Fetching data...</div>
+    </div>
 
-<div class="container">
-  <h2>Daily Schedule</h2>
-  <div class="item"><div class="dot" style="background-color: #DCAE96;"></div> 09:00 — Reading</div>
-  <div class="item"><div class="dot" style="background-color: #B2AC88;"></div> 11:00 — Workout</div>
-  <div class="item"><div class="dot" style="background-color: #DCAE96;"></div> 14:00 — Sewing</div>
-</div>
+    <script>
+        const API_KEY = 'AIzaSyD0x1_dYTIdaCjAY-mJ_oYwDXXKj8y16R0';
+        const CALENDAR_ID = 's.alshwauva@gmail.com';
+        
+        async function fetchCalendar() {
+            const now = new Date().toISOString();
+            const url = `https://www.googleapis.com/calendar/v3/calendars/${CALENDAR_ID}/events?key=${API_KEY}&timeMin=${now}&maxResults=5&singleEvents=true&orderBy=startTime`;
+            
+            try {
+                const response = await fetch(url);
+                const data = await response.json();
+                const container = document.getElementById('calendar-content');
+                container.innerHTML = '';
 
+                data.items.forEach(event => {
+                    const start = new Date(event.start.dateTime || event.start.date);
+                    container.innerHTML += `
+                        <div class="event">
+                            <span class="time">${start.toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'})}</span>
+                            <span class="title">${event.summary}</span>
+                        </div>`;
+                });
+            } catch (e) {
+                document.getElementById('calendar-content').innerHTML = "Connection Error";
+            }
+        }
+        fetchCalendar();
+    </script>
 </body>
 </html>
