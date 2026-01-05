@@ -3,16 +3,25 @@
 <head>
     <meta charset="UTF-8">
     <style>
+        /* Your Font: Instrument Serif */
         @import url('https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&display=swap');
 
         body {
             background-color: transparent; 
             margin: 0;
             padding: 10px;
-            font-family: 'Instrument Serif', sans-serif;
+            font-family: 'Instrument Serif', serif;
             display: flex;
             flex-direction: column;
             gap: 12px;
+        }
+
+        /* Restoration of Clickable Style */
+        .event-link {
+            text-decoration: none;
+            color: inherit;
+            display: block;
+            transition: all 0.3s ease;
         }
 
         .event-pill {
@@ -20,39 +29,58 @@
             align-items: center;
             padding: 12px 18px;
             border-radius: 15px;
-            font-size: 13px;
+            font-size: 16px; /* Increased slightly for serif readability */
             color: white;
+            
+            /* Glassmorphism with Depth */
             backdrop-filter: blur(14px);
             -webkit-backdrop-filter: blur(14px);
-            border: 1px solid rgba(255, 255, 255, 0.2);
-            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+            border: 1px solid rgba(255, 255, 255, 0.3);
+            
+            /* Inner glow makes it look less flat */
+            box-shadow: 
+                inset 0 1px 1px rgba(255, 255, 255, 0.4),
+                0 4px 15px rgba(0, 0, 0, 0.15);
+            
             width: 300px; 
             box-sizing: border-box;
-            transition: all 0.4s ease;
             position: relative;
+            overflow: hidden;
         }
 
-        /* The Glow Effect for Active Tasks */
+        /* Subtle Shimmer Overlay */
+        .event-pill::after {
+            content: "";
+            position: absolute;
+            top: 0; left: 0; right: 0; height: 50%;
+            background: linear-gradient(rgba(255,255,255,0.1), rgba(255,255,255,0));
+            pointer-events: none;
+        }
+
+        .event-link:hover .event-pill {
+            transform: translateY(-2px);
+            border-color: rgba(255, 255, 255, 0.5);
+            box-shadow: 0 6px 20px rgba(0, 0, 0, 0.2);
+        }
+
         .active-task {
-            border: 2px solid rgba(255, 255, 255, 0.8);
-            box-shadow: 0 0 20px rgba(255, 255, 255, 0.4), 0 0 40px rgba(255, 255, 255, 0.2);
-            transform: scale(1.05);
+            border: 2px solid rgba(255, 255, 255, 0.9);
             animation: pulse-glow 2s infinite alternate;
             z-index: 10;
         }
 
         @keyframes pulse-glow {
-            from { box-shadow: 0 0 15px rgba(255, 255, 255, 0.3); }
-            to { box-shadow: 0 0 25px rgba(255, 255, 255, 0.6); }
+            from { box-shadow: 0 0 15px rgba(255, 255, 255, 0.3); transform: scale(1.02); }
+            to { box-shadow: 0 0 25px rgba(255, 255, 255, 0.6); transform: scale(1.04); }
         }
 
         .event-time {
-            font-size: 11px;
+            font-size: 12px;
             font-weight: 700;
             margin-right: 18px;
             white-space: nowrap;
             text-transform: uppercase;
-            min-width: 110px;
+            min-width: 105px;
             color: rgba(255, 255, 255, 0.95);
         }
 
@@ -62,6 +90,7 @@
             white-space: nowrap;
             overflow: hidden;
             text-overflow: ellipsis;
+            font-style: italic; /* Looks nice with Instrument Serif */
         }
     </style>
 </head>
@@ -110,25 +139,23 @@
             allEvents.forEach(event => {
                 const startT = new Date(event.start.dateTime || event.start.date);
                 const endT = new Date(event.end.dateTime || event.end.date);
-                
-                // Logic to check if this task is happening right now
                 const isActive = now >= startT && now <= endT;
+                const eventUrl = event.htmlLink || "#";
 
                 const formatTime = (date) => date.toLocaleTimeString([], {hour: 'numeric', minute:'2-digit'}).replace(/\s+/g, '');
                 const timeRange = `${formatTime(startT)} - ${formatTime(endT)}`;
                 
-                const pill = document.createElement('div');
-                pill.className = `event-pill ${isActive ? 'active-task' : ''}`;
-                pill.style.backgroundColor = event.displayColor;
-                pill.innerHTML = `
-                    <span class="event-time">${timeRange}</span>
-                    <span class="event-name">${event.summary}</span>
+                container.innerHTML += `
+                    <a href="${eventUrl}" target="_blank" class="event-link">
+                        <div class="event-pill ${isActive ? 'active-task' : ''}" style="background-color: ${event.displayColor}">
+                            <span class="event-time">${timeRange}</span>
+                            <span class="event-name">${event.summary}</span>
+                        </div>
+                    </a>
                 `;
-                container.appendChild(pill);
             });
         }
         fetchAllCalendars();
-        // Refresh every 5 minutes to keep the "Active" status accurate
         setInterval(fetchAllCalendars, 300000);
     </script>
 </body>
