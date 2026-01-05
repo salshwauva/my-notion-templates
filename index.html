@@ -8,11 +8,11 @@
         body {
             background-color: transparent; 
             margin: 0;
-            padding: 5px;
+            padding: 10px;
             font-family: 'Inter', sans-serif;
             display: flex;
             flex-direction: column;
-            gap: 10px;
+            gap: 12px;
         }
 
         .event-pill {
@@ -22,36 +22,46 @@
             border-radius: 15px;
             font-size: 13px;
             color: white;
-            
-            /* Frosted Glass Effect */
             backdrop-filter: blur(14px);
             -webkit-backdrop-filter: blur(14px);
-            border: 1px solid rgba(255, 255, 255, 0.25);
+            border: 1px solid rgba(255, 255, 255, 0.2);
             box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
-            
-            width: fit-content;
-            min-width: 280px;
-            transition: transform 0.2s ease;
+            width: 320px; 
+            box-sizing: border-box;
+            transition: all 0.4s ease;
+            position: relative;
         }
 
-        .event-pill:hover {
-            transform: scale(1.02);
+        /* The Glow Effect for Active Tasks */
+        .active-task {
+            border: 2px solid rgba(255, 255, 255, 0.8);
+            box-shadow: 0 0 20px rgba(255, 255, 255, 0.4), 0 0 40px rgba(255, 255, 255, 0.2);
+            transform: scale(1.05);
+            animation: pulse-glow 2s infinite alternate;
+            z-index: 10;
+        }
+
+        @keyframes pulse-glow {
+            from { box-shadow: 0 0 15px rgba(255, 255, 255, 0.3); }
+            to { box-shadow: 0 0 25px rgba(255, 255, 255, 0.6); }
         }
 
         .event-time {
             font-size: 11px;
-            font-weight: 700; /* Bold time */
+            font-weight: 700;
             margin-right: 18px;
             white-space: nowrap;
             text-transform: uppercase;
-            letter-spacing: 0.5px;
+            min-width: 110px;
             color: rgba(255, 255, 255, 0.95);
         }
 
         .event-name {
             font-weight: 400;
             flex-grow: 1;
-            letter-spacing: 0.2px;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
         }
     </style>
 </head>
@@ -69,30 +79,29 @@
         ];
 
         async function fetchAllCalendars() {
-            const start = new Date();
-            start.setHours(0,0,0,0);
-            const end = new Date();
-            end.setHours(23,59,59,999);
+            const now = new Date();
+            const startOfDay = new Date(now);
+            startOfDay.setHours(0,0,0,0);
+            const endOfDay = new Date(now);
+            endOfDay.setHours(23,59,59,999);
 
             let allEvents = [];
 
             for (const config of calendarConfigs) {
-                const url = `https://www.googleapis.com/calendar/v3/calendars/${encodeURIComponent(config.id)}/events?key=${API_KEY}&timeMin=${start.toISOString()}&timeMax=${end.toISOString()}&singleEvents=true&orderBy=startTime`;
+                const url = `https://www.googleapis.com/calendar/v3/calendars/${encodeURIComponent(config.id)}/events?key=${API_KEY}&timeMin=${startOfDay.toISOString()}&timeMax=${endOfDay.toISOString()}&singleEvents=true&orderBy=startTime`;
                 
                 try {
                     const response = await fetch(url);
                     const data = await response.json();
                     if (data.items) {
-                        const eventsWithColor = data.items.map(event => ({
+                        allEvents = allEvents.concat(data.items.map(event => ({
                             ...event,
                             displayColor: config.color
-                        }));
-                        allEvents = allEvents.concat(eventsWithColor);
+                        })));
                     }
                 } catch (e) { console.error("Sync Error", e); }
             }
 
-            // Sort by start time
             allEvents.sort((a, b) => new Date(a.start.dateTime || a.start.date) - new Date(b.start.dateTime || b.start.date));
 
             const container = document.getElementById('calendar-content');
@@ -102,11 +111,14 @@
                 const startT = new Date(event.start.dateTime || event.start.date);
                 const endT = new Date(event.end.dateTime || event.end.date);
                 
+                // Logic to check if this task is happening right now
+                const isActive = now >= startT && now <= endT;
+
                 const formatTime = (date) => date.toLocaleTimeString([], {hour: 'numeric', minute:'2-digit'}).replace(/\s+/g, '');
                 const timeRange = `${formatTime(startT)} - ${formatTime(endT)}`;
                 
                 const pill = document.createElement('div');
-                pill.className = 'event-pill';
+                pill.className = `event-pill ${isActive ? 'active-task' : ''}`;
                 pill.style.backgroundColor = event.displayColor;
                 pill.innerHTML = `
                     <span class="event-time">${timeRange}</span>
@@ -116,6 +128,8 @@
             });
         }
         fetchAllCalendars();
+        // Refresh every 5 minutes to keep the "Active" status accurate
+        setInterval(fetchAllCalendars, 300000);
     </script>
 </body>
 </html>
