@@ -1,146 +1,107 @@
 <!DOCTYPE html>
-<html lang="en">
+<html>
 <head>
-    <meta charset="UTF-8">
     <style>
-        /* Retro Pixel Font */
-        @import url('https://fonts.googleapis.com/css2?family=DotGothic16&display=swap');
-
-        :root {
-            --neon-pink: #ff00ff;
-            --neon-blue: #00ffff;
-            --bg-purple: #1a1a2e;
-            --glass-bg: rgba(255, 255, 255, 0.05);
-        }
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;600&display=swap');
 
         body {
-            background-color: transparent; /* Seamless blend with Notion */
-            font-family: 'DotGothic16', sans-serif;
+            background-color: transparent; 
+            margin: 0;
+            padding: 5px;
+            font-family: 'Inter', sans-serif;
             display: flex;
-            justify-content: center;
-            padding: 20px;
+            flex-direction: column;
+            gap: 10px;
         }
 
-        .widget-container {
-            background: var(--bg-purple);
-            border: 4px solid var(--neon-pink);
-            border-radius: 20px;
-            padding: 30px;
-            width: 450px;
-            box-shadow: 0 0 15px var(--neon-pink), inset 0 0 10px var(--neon-pink);
-            position: relative;
-        }
-
-        h2 {
-            color: var(--neon-blue);
-            text-align: center;
-            text-transform: uppercase;
-            font-size: 28px;
-            margin-top: 0;
-            letter-spacing: 4px;
-            text-shadow: 3px 3px 0px #b967ff;
-            border-bottom: 2px solid var(--neon-blue);
-            padding-bottom: 10px;
-        }
-
-        .event-list {
-            margin-top: 20px;
-        }
-
-        .event-item {
+        .event-pill {
             display: flex;
             justify-content: space-between;
             align-items: center;
-            padding: 12px;
-            margin-bottom: 8px;
-            background: var(--glass-bg);
-            border-radius: 10px;
-            border-left: 5px solid var(--neon-blue);
-            transition: 0.3s;
+            padding: 10px 16px;
+            border-radius: 14px;
+            font-size: 13px;
+            color: white;
+            font-weight: 600;
+            
+            /* Frosted Glass Effect */
+            backdrop-filter: blur(10px);
+            -webkit-backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+            
+            max-width: 280px; /* Small and compact */
+            transition: transform 0.2s ease;
         }
 
-        .event-item:hover {
-            box-shadow: 0 0 10px var(--neon-blue);
-            transform: scale(1.02);
-        }
-
-        .habit-dot {
-            height: 12px;
-            width: 12px;
-            border-radius: 50%;
-            display: inline-block;
-            margin-right: 15px;
-            box-shadow: 0 0 8px currentColor;
-        }
-
-        .event-name {
-            color: #ffffff;
-            font-size: 18px;
-            text-transform: uppercase;
-            flex-grow: 1;
+        .event-pill:hover {
+            transform: scale(1.03);
         }
 
         .event-time {
-            color: var(--neon-blue);
-            font-size: 14px;
-        }
-
-        #loading {
-            color: var(--neon-pink);
-            text-align: center;
-            animation: blink 1s infinite;
-        }
-
-        @keyframes blink {
-            50% { opacity: 0; }
+            font-size: 10px;
+            opacity: 0.7;
+            margin-left: 12px;
+            font-weight: 400;
+            text-transform: uppercase;
         }
     </style>
 </head>
 <body>
 
-<div class="widget-container">
-    <h2>Daily Schedule</h2>
-    <div id="calendar-content">
-        <div id="loading">INITIALIZING SYSTEM...</div>
-    </div>
-</div>
+    <div id="calendar-content"></div>
 
-<script>
-    const API_KEY = 'AIzaSyD0x1_dYTIdaCjAY-mJ_oYwDXXKj8y16R0'; //
-    const CALENDAR_ID = 's.alshwauva@gmail.com'; //
+    <script>
+        const API_KEY = 'AIzaSyD0x1_dYTIdaCjAY-mJ_oYwDXXKj8y16R0';
+        const CALENDAR_ID = 's.alshwauva@gmail.com';
 
-    async function fetchCalendar() {
-        const now = new Date().toISOString();
-        const url = `https://www.googleapis.com/calendar/v3/calendars/${CALENDAR_ID}/events?key=${API_KEY}&timeMin=${now}&maxResults=5&singleEvents=true&orderBy=startTime`;
-        
-        try {
-            const response = await fetch(url);
-            const data = await response.json();
-            const container = document.getElementById('calendar-content');
+        // Glassmorphism Color Mapper (Semi-transparent Pastel/Neon)
+        const colorMap = {
+            "1": "rgba(162, 210, 255, 0.4)", // Pastel Blue
+            "2": "rgba(185, 251, 192, 0.4)", // Mint
+            "3": "rgba(255, 175, 204, 0.4)", // Pastel Pink
+            "4": "rgba(255, 207, 210, 0.4)", // Soft Red
+            "5": "rgba(253, 228, 207, 0.4)", // Peach
+            "6": "rgba(241, 192, 232, 0.4)", // Soft Purple
+            "7": "rgba(1, 205, 254, 0.4)",   // Neon Cyan
+            "8": "rgba(255, 113, 206, 0.4)", // Neon Pink
+            "9": "rgba(185, 103, 255, 0.4)", // Electric Purple
+            "10": "rgba(207, 186, 240, 0.4)",// Lavender
+            "11": "rgba(255, 251, 150, 0.4)" // Neon Yellow
+        };
+
+        async function fetchCalendar() {
+            const startOfDay = new Date();
+            startOfDay.setHours(0,0,0,0);
+            const url = `https://www.googleapis.com/calendar/v3/calendars/${CALENDAR_ID}/events?key=${API_KEY}&timeMin=${startOfDay.toISOString()}&maxResults=6&singleEvents=true&orderBy=startTime`;
             
-            if (!data.items || data.items.length === 0) {
-                container.innerHTML = '<div style="color:white; text-align:center;">NO DATA DETECTED</div>';
-                return;
+            try {
+                const response = await fetch(url);
+                const data = await response.json();
+                const container = document.getElementById('calendar-content');
+                container.innerHTML = '';
+
+                data.items.forEach(event => {
+                    const start = new Date(event.start.dateTime || event.start.date);
+                    const timeStr = start.toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'});
+                    
+                    // Pull the Google Color ID, or default to soft purple glass
+                    const bgColor = colorMap[event.colorId] || "rgba(255, 255, 255, 0.15)"; 
+                    
+                    const pill = document.createElement('div');
+                    pill.className = 'event-pill';
+                    pill.style.backgroundColor = bgColor;
+                    pill.innerHTML = `
+                        <span>${event.summary}</span>
+                        <span class="event-time">${timeStr}</span>
+                    `;
+                    container.appendChild(pill);
+                });
+            } catch (e) {
+                console.error("Sync Error");
             }
-
-            container.innerHTML = '';
-            data.items.forEach((event, index) => {
-                const start = new Date(event.start.dateTime || event.start.date);
-                const dotColor = index % 2 === 0 ? '#00ffff' : '#ff00ff'; // Alternates blue/pink dots
-                
-                container.innerHTML += `
-                    <div class="event-item">
-                        <span class="habit-dot" style="color: ${dotColor}; background-color: ${dotColor};"></span>
-                        <span class="event-name">${event.summary}</span>
-                        <span class="event-time">${start.toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'})}</span>
-                    </div>`;
-            });
-        } catch (e) {
-            document.getElementById('calendar-content').innerHTML = "SYSTEM ERROR: CHECK API KEY";
         }
-    }
-    fetchCalendar();
-</script>
-
+        fetchCalendar();
+    </script>
 </body>
 </html>
