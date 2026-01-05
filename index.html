@@ -1,49 +1,146 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
+    <meta charset="UTF-8">
     <style>
-        @import url('https://fonts.googleapis.com/css2?family=Space+Mono&display=swap');
-        :root { --pink: #ff71ce; --blue: #01cdfe; --purple: #b967ff; }
-        body { background: transparent; font-family: 'Space Mono', monospace; color: var(--blue); }
-        .widget { border: 2px solid var(--pink); border-radius: 15px; padding: 20px; background: rgba(0,0,0,0.8); box-shadow: 0 0 15px var(--purple); }
-        .event { margin: 10px 0; padding-bottom: 5px; border-bottom: 1px solid rgba(1, 205, 254, 0.2); }
-        .time { color: var(--pink); font-size: 11px; }
-        .title { display: block; font-size: 14px; text-transform: uppercase; }
+        /* Retro Pixel Font */
+        @import url('https://fonts.googleapis.com/css2?family=DotGothic16&display=swap');
+
+        :root {
+            --neon-pink: #ff00ff;
+            --neon-blue: #00ffff;
+            --bg-purple: #1a1a2e;
+            --glass-bg: rgba(255, 255, 255, 0.05);
+        }
+
+        body {
+            background-color: transparent; /* Seamless blend with Notion */
+            font-family: 'DotGothic16', sans-serif;
+            display: flex;
+            justify-content: center;
+            padding: 20px;
+        }
+
+        .widget-container {
+            background: var(--bg-purple);
+            border: 4px solid var(--neon-pink);
+            border-radius: 20px;
+            padding: 30px;
+            width: 450px;
+            box-shadow: 0 0 15px var(--neon-pink), inset 0 0 10px var(--neon-pink);
+            position: relative;
+        }
+
+        h2 {
+            color: var(--neon-blue);
+            text-align: center;
+            text-transform: uppercase;
+            font-size: 28px;
+            margin-top: 0;
+            letter-spacing: 4px;
+            text-shadow: 3px 3px 0px #b967ff;
+            border-bottom: 2px solid var(--neon-blue);
+            padding-bottom: 10px;
+        }
+
+        .event-list {
+            margin-top: 20px;
+        }
+
+        .event-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 12px;
+            margin-bottom: 8px;
+            background: var(--glass-bg);
+            border-radius: 10px;
+            border-left: 5px solid var(--neon-blue);
+            transition: 0.3s;
+        }
+
+        .event-item:hover {
+            box-shadow: 0 0 10px var(--neon-blue);
+            transform: scale(1.02);
+        }
+
+        .habit-dot {
+            height: 12px;
+            width: 12px;
+            border-radius: 50%;
+            display: inline-block;
+            margin-right: 15px;
+            box-shadow: 0 0 8px currentColor;
+        }
+
+        .event-name {
+            color: #ffffff;
+            font-size: 18px;
+            text-transform: uppercase;
+            flex-grow: 1;
+        }
+
+        .event-time {
+            color: var(--neon-blue);
+            font-size: 14px;
+        }
+
+        #loading {
+            color: var(--neon-pink);
+            text-align: center;
+            animation: blink 1s infinite;
+        }
+
+        @keyframes blink {
+            50% { opacity: 0; }
+        }
     </style>
 </head>
 <body>
-    <div class="widget">
-        <h2 style="color:var(--purple); text-shadow: 2px 2px #000;">ＬＩＶＥ ＳＣＨＥＤ</h2>
-        <div id="calendar-content">Fetching data...</div>
+
+<div class="widget-container">
+    <h2>Daily Schedule</h2>
+    <div id="calendar-content">
+        <div id="loading">INITIALIZING SYSTEM...</div>
     </div>
+</div>
 
-    <script>
-        const API_KEY = 'AIzaSyD0x1_dYTIdaCjAY-mJ_oYwDXXKj8y16R0';
-        const CALENDAR_ID = 's.alshwauva@gmail.com';
+<script>
+    const API_KEY = 'AIzaSyD0x1_dYTIdaCjAY-mJ_oYwDXXKj8y16R0'; //
+    const CALENDAR_ID = 's.alshwauva@gmail.com'; //
+
+    async function fetchCalendar() {
+        const now = new Date().toISOString();
+        const url = `https://www.googleapis.com/calendar/v3/calendars/${CALENDAR_ID}/events?key=${API_KEY}&timeMin=${now}&maxResults=5&singleEvents=true&orderBy=startTime`;
         
-        async function fetchCalendar() {
-            const now = new Date().toISOString();
-            const url = `https://www.googleapis.com/calendar/v3/calendars/${CALENDAR_ID}/events?key=${API_KEY}&timeMin=${now}&maxResults=5&singleEvents=true&orderBy=startTime`;
+        try {
+            const response = await fetch(url);
+            const data = await response.json();
+            const container = document.getElementById('calendar-content');
             
-            try {
-                const response = await fetch(url);
-                const data = await response.json();
-                const container = document.getElementById('calendar-content');
-                container.innerHTML = '';
-
-                data.items.forEach(event => {
-                    const start = new Date(event.start.dateTime || event.start.date);
-                    container.innerHTML += `
-                        <div class="event">
-                            <span class="time">${start.toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'})}</span>
-                            <span class="title">${event.summary}</span>
-                        </div>`;
-                });
-            } catch (e) {
-                document.getElementById('calendar-content').innerHTML = "Connection Error";
+            if (!data.items || data.items.length === 0) {
+                container.innerHTML = '<div style="color:white; text-align:center;">NO DATA DETECTED</div>';
+                return;
             }
+
+            container.innerHTML = '';
+            data.items.forEach((event, index) => {
+                const start = new Date(event.start.dateTime || event.start.date);
+                const dotColor = index % 2 === 0 ? '#00ffff' : '#ff00ff'; // Alternates blue/pink dots
+                
+                container.innerHTML += `
+                    <div class="event-item">
+                        <span class="habit-dot" style="color: ${dotColor}; background-color: ${dotColor};"></span>
+                        <span class="event-name">${event.summary}</span>
+                        <span class="event-time">${start.toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'})}</span>
+                    </div>`;
+            });
+        } catch (e) {
+            document.getElementById('calendar-content').innerHTML = "SYSTEM ERROR: CHECK API KEY";
         }
-        fetchCalendar();
-    </script>
+    }
+    fetchCalendar();
+</script>
+
 </body>
 </html>
