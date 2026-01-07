@@ -8,56 +8,60 @@
         body {
             background-color: transparent;
             margin: 0;
-            padding: 20px;
+            padding: 30px; 
             font-family: 'Poppins', sans-serif;
             display: flex;
             flex-direction: column;
-            gap: 20px;
-            text-transform: uppercase;
+            gap: 45px; 
+            overflow-y: auto;
+            text-transform: lowercase;
+            align-items: flex-start;
         }
 
-        .timer-container {
+        .timer-pill {
             display: flex;
-            flex-direction: column;
-            padding: 15px 20px;
-            border-radius: 14px;
-            width: 320px;
-            box-sizing: border-box;
+            align-items: center;
+            gap: 15px;
+            padding: 8px 16px;
+            border-radius: 10px;
+            width: fit-content;
+            white-space: nowrap;
+            
             backdrop-filter: blur(20px);
             -webkit-backdrop-filter: blur(20px);
-            border: 1px solid rgba(255, 255, 255, 0.15);
-            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.4);
-            color: #080808; /* Vampire Black for contrast */
+            border: 1.5px solid rgba(255, 255, 255, 0.25);
+            
+            /* THE YELLOW GLOW AROUND THE BLOCK */
+            box-shadow: 
+                inset 0 1px 1px rgba(255, 255, 255, 0.2),
+                0 0 18px rgba(255, 255, 100, 0.45), 
+                0 0 8px rgba(255, 255, 100, 0.2);
+            
+            position: relative;
         }
 
         .timer-label {
-            font-size: 10px;
+            font-size: 9px;
             font-weight: 600;
             letter-spacing: 3px;
-            margin-bottom: 8px;
-            opacity: 0.9;
+            color: #080808; /* Vampire Black */
         }
 
         .timer-digits {
             display: flex;
-            gap: 10px;
-            font-size: 18px;
+            align-items: baseline;
+            font-size: 11px;
             font-weight: 600;
+            color: #080808;
             letter-spacing: 1px;
-        }
-
-        .unit {
-            display: flex;
-            flex-direction: column;
-            align-items: center;
         }
 
         .unit-label {
-            font-size: 8px;
+            font-size: 8.5px;
             font-weight: 500;
-            letter-spacing: 1px;
             color: #001440; /* Cetacean Blue */
-            margin-top: -2px;
+            margin-left: 1px;
+            opacity: 0.8;
         }
     </style>
 </head>
@@ -68,56 +72,35 @@
     <script>
         // INPUT YOUR DATES AND LABELS HERE
         const countdownData = [
-            { label: "Project Deadline", date: "2026-03-01T00:00:00", color: "rgba(41, 14, 122, 0.9)" },    // Outer Rim
-            { id: "timer2", label: "Product Launch", date: "2026-06-15T12:00:00", color: "rgba(111, 28, 178, 0.9)" },  // Fuchsia Nebula
-            { id: "timer3", label: "Next Vacation", date: "2026-08-20T00:00:00", color: "rgba(9, 158, 169, 0.9)" },    // Aquarium Diver
-            { id: "timer4", label: "Special Event", date: "2026-12-31T23:59:59", color: "rgba(227, 26, 224, 0.9)" }    // Pink Pride
+            { label: "new year", date: "2027-01-01T00:00:00", color: "rgba(40, 1, 32, 0.9)" },        
+            { label: "project alpha", date: "2026-03-15T00:00:00", color: "rgba(69, 0, 99, 0.9)" }, 
+            { label: "spring equinox", date: "2026-03-20T00:00:00", color: "rgba(148, 20, 209, 0.9)" }, 
+            { label: "summer launch", date: "2026-06-01T00:00:00", color: "rgba(3, 178, 237, 0.9)" }
         ];
+
+        function calculateDays(targetDate) {
+            const distance = new Date(targetDate).getTime() - new Date().getTime();
+            return Math.ceil(distance / (1000 * 60 * 60 * 24));
+        }
 
         function initCountdowns() {
             const wrapper = document.getElementById('countdown-wrapper');
             
             countdownData.forEach((item, index) => {
                 const container = document.createElement('div');
-                container.className = 'timer-container';
+                container.className = 'timer-pill';
                 container.style.backgroundColor = item.color;
-                container.id = `container-${index}`;
+                
+                const daysLeft = calculateDays(item.date);
                 
                 container.innerHTML = `
                     <div class="timer-label">${item.label}</div>
-                    <div class="timer-digits" id="timer-${index}">
-                        <div class="unit"><span class="days">00</span><span class="unit-label">DAYS</span></div>
-                        <div class="unit"><span class="hours">00</span><span class="unit-label">HRS</span></div>
-                        <div class="unit"><span class="minutes">00</span><span class="unit-label">MIN</span></div>
-                        <div class="unit"><span class="seconds">00</span><span class="unit-label">SEC</span></div>
+                    <div class="timer-digits">
+                        ${daysLeft >= 0 ? daysLeft + '<span class="unit-label">d</span>' : 'completed'}
                     </div>
                 `;
                 wrapper.appendChild(container);
-                
-                updateTimer(item.date, index);
-                setInterval(() => updateTimer(item.date, index), 1000);
             });
-        }
-
-        function updateTimer(targetDate, index) {
-            const now = new Date().getTime();
-            const distance = new Date(targetDate).getTime() - now;
-            const display = document.getElementById(`timer-${index}`);
-
-            if (distance < 0) {
-                display.innerHTML = "COMPLETED";
-                return;
-            }
-
-            const d = Math.floor(distance / (1000 * 60 * 60 * 24));
-            const h = Math.floor((distance % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
-            const m = Math.floor((distance % (1000 * 60 * 60)) / (1000 * 60));
-            const s = Math.floor((distance % (1000 * 60)) / 1000);
-
-            display.querySelector('.days').innerText = d.toString().padStart(2, '0');
-            display.querySelector('.hours').innerText = h.toString().padStart(2, '0');
-            display.querySelector('.minutes').innerText = m.toString().padStart(2, '0');
-            display.querySelector('.seconds').innerText = s.toString().padStart(2, '0');
         }
 
         initCountdowns();
