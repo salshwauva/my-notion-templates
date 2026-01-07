@@ -5,7 +5,8 @@
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@500;600&display=swap');
 
-        body {
+        /* ZERO OFFSET STYLING */
+        html, body {
             background-color: transparent; 
             margin: 0;
             padding: 0; 
@@ -23,12 +24,8 @@
             color: inherit;
             display: block;
             width: fit-content;
-            margin-left: 20px; 
-            margin-right: 20px;
+            margin: 0; /* Strict zero margin */
         }
-
-        .event-link:first-child { margin-top: 25px; }
-        .event-link:last-child { margin-bottom: 25px; }
 
         .event-pill {
             display: flex;
@@ -41,12 +38,9 @@
             color: #080808; 
             backdrop-filter: blur(15px);
             -webkit-backdrop-filter: blur(15px);
-            
-            /* STANDARD BORDER WEIGHT */
             border-width: 2.5px;
             border-style: solid;
-            
-            width: 320px; 
+            width: 340px; /* Slightly wider to accommodate full time range */
             box-sizing: border-box;
             position: relative;
             transition: all 0.3s ease;
@@ -54,23 +48,17 @@
             min-height: 45px; 
         }
 
-        /* NOTICEABLY THICKER ACTIVE BORDER */
+        /* THICK ACTIVE BORDER */
         .active-task {
             border-width: 6px !important;
             border-color: #ffff64 !important;
             animation: active-glow 1.5s infinite alternate ease-in-out;
-            z-index: 10; /* Ensures the glow doesn't get tucked under other blocks */
+            z-index: 10;
         }
 
         @keyframes active-glow {
-            from { 
-                box-shadow: 0 0 15px #ffff64, inset 0 0 5px #ffff64;
-                transform: scale(1.02);
-            }
-            to { 
-                box-shadow: 0 0 45px #ffff64, inset 0 0 15px #ffff64;
-                transform: scale(1.05);
-            }
+            from { box-shadow: 0 0 15px #ffff64, inset 0 0 5px #ffff64; }
+            to { box-shadow: 0 0 45px #ffff64, inset 0 0 15px #ffff64; }
         }
 
         .event-time {
@@ -81,7 +69,7 @@
             background: rgba(255, 255, 255, 0.7);
             padding: 2px 8px;
             border-radius: 5px;
-            font-size: 9px;
+            font-size: 8.5px; /* Slightly smaller to fit "10am-11am" */
             margin-top: 2px;
         }
 
@@ -147,18 +135,21 @@
 
                 const formatTime = (date) => date.toLocaleTimeString([], {hour: 'numeric', minute:'2-digit'}).replace(/\s+/g, '').toLowerCase();
                 
+                // CREATE THE FULL TIME RANGE STRING
+                const timeRange = `${formatTime(startT)}-${formatTime(endT)}`;
+                
                 htmlContent += `
                     <a href="${event.htmlLink || "#"}" target="_blank" class="event-link">
                         <div class="event-pill ${isActive ? 'active-task' : ''}" 
                              style="border-color: ${event.borderColor}; --glow-color: ${event.glowColor}; background-color: rgba(255,255,255,0.1); height: ${dynamicHeight}px;">
-                            <span class="event-time">${formatTime(startT)}</span>
+                            <span class="event-time">${timeRange}</span>
                             <span class="event-name">${event.summary}</span>
                         </div>
                     </a>
                 `;
             });
 
-            container.innerHTML = htmlContent || '<div style="color:rgba(255,255,255,0.2); font-size:10px; margin-left:20px; letter-spacing:4px;">no signals detected</div>';
+            container.innerHTML = htmlContent || '<div style="color:rgba(255,255,255,0.2); font-size:10px; letter-spacing:4px;">no signals detected</div>';
         }
 
         fetchAllCalendars();
