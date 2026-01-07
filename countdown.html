@@ -8,12 +8,13 @@
         body {
             background-color: transparent;
             margin: 0;
-            /* Extra padding so Notion doesn't cut off the glow */
-            padding: 50px; 
+            /* Padding only on top/bottom to allow glow space; 0 on left */
+            padding: 40px 0px; 
             font-family: 'Poppins', sans-serif;
             display: flex;
             text-transform: lowercase;
             overflow: visible;
+            justify-content: flex-start;
         }
 
         .timer-pill {
@@ -29,8 +30,11 @@
             /* BRIGHT YELLOW BORDER */
             border: 2px solid #ffff64;
             
-            /* THE PULSE: Controls size and glow intensity */
+            /* AGGRESSIVE PULSE */
             animation: aggressive-pulse infinite ease-in-out;
+            
+            /* Ensures it stays left-aligned during scaling */
+            transform-origin: left center;
         }
 
         @keyframes aggressive-pulse {
@@ -39,7 +43,6 @@
                 transform: scale(1);
             }
             50% {
-                /* Huge outward glow and slight growth to make it visible */
                 box-shadow: 0 0 40px #ffff64, 0 0 70px rgba(255, 255, 100, 0.4), inset 0 0 15px #ffff64;
                 transform: scale(1.03);
             }
@@ -49,7 +52,7 @@
             }
         }
 
-        /* VIBRANT NEON ORANGE TEXT */
+        /* NEON ORANGE TEXT */
         .timer-digits, .timer-label, .unit-label {
             color: #ff6d1f; 
             font-weight: 600;
@@ -59,7 +62,7 @@
         }
 
         .timer-digits {
-            font-size: 20px; /* Slightly larger to be the focal point */
+            font-size: 20px;
             letter-spacing: 1px;
         }
 
@@ -94,10 +97,9 @@
             const container = document.getElementById('countdown-target');
             const daysLeft = calculateDays(eventData.date);
             
-            // Accelerated speed for high-priority pulses
             let speed = "2.5s"; 
-            if (daysLeft <= 7) speed = "0.7s";
-            else if (daysLeft <= 30) speed = "1.5s";
+            if (daysLeft <= 7) speed = "0.8s";
+            else if (daysLeft <= 30) speed = "1.6s";
 
             const pill = document.createElement('div');
             pill.className = 'timer-pill';
