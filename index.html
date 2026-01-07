@@ -7,11 +7,12 @@
         html, body {
             background-color: transparent; 
             margin: 0;
-            /* REDUCED LEFT PADDING */
-            padding: 25px 0px 25px 10px; 
+            /* ZERO LEFT PADDING - Aligns with 'sched' */
+            padding: 25px 0px 25px 0px; 
             font-family: sans-serif;
             display: flex;
             flex-direction: column;
+            /* FORCED SEPARATION */
             gap: 50px; 
             overflow-x: hidden;
             text-transform: lowercase;
@@ -23,11 +24,12 @@
             color: inherit;
             display: block;
             width: fit-content;
+            margin: 0;
             transition: transform 0.2s ease-out;
         }
 
         .event-link:hover {
-            transform: scale(1.04) translateX(5px);
+            transform: scale(1.02) translateX(5px);
             z-index: 20;
         }
 
@@ -40,12 +42,13 @@
             -webkit-backdrop-filter: blur(15px);
             border-width: 2.5px;
             border-style: solid;
-            width: 380px; /* Slightly wider for the fonts */
+            width: 380px; 
             box-sizing: border-box;
             position: relative;
             transition: all 0.3s ease;
             box-shadow: 0 4px 15px var(--glow-color);
-            min-height: 50px; 
+            /* This ensures the 50px gap is maintained regardless of internal height */
+            margin-bottom: 0px; 
         }
 
         .event-link:hover .event-pill {
@@ -64,23 +67,21 @@
             to { box-shadow: 0 0 45px #ffff64; }
         }
 
-        /* SEGMENTED DISPLAY FONT FOR TIME */
+        /* TIME: SEGMENTED RED */
         .event-time {
             font-family: 'Share Tech Mono', monospace;
-            font-weight: 400; 
-            font-size: 14px; /* Adjusted for readability */
+            font-size: 14px;
             color: rgb(227, 20, 41); 
             letter-spacing: 1px;
             margin-right: 20px;
             white-space: nowrap;
-            background: transparent;
         }
 
-        /* PRESS START 2P FOR EVENT NAME */
+        /* EVENT NAME: PIXEL GRAY (122, 122, 121) */
         .event-name {
             font-family: 'Press Start 2P', cursive;
-            font-size: 7px; /* Pixel fonts need to be small or they get blurry */
-            color: rgb(232, 98, 43);
+            font-size: 7px;
+            color: rgb(122, 122, 121);
             letter-spacing: 1px;
             flex-grow: 1;
             line-height: 1.8;
@@ -108,23 +109,20 @@
             const now = new Date();
             const startOfDay = new Date(now); startOfDay.setHours(0,0,0,0);
             const endOfDay = new Date(now); endOfDay.setHours(23,59,59,999);
-            const cacheBuster = now.getTime();
-
-            const fetchPromises = calendarConfigs
-                .filter(config => config.id && !config.id.includes('CALENDAR_ID'))
-                .map(async (config) => {
-                    const url = `https://www.googleapis.com/calendar/v3/calendars/${encodeURIComponent(config.id)}/events?key=${API_KEY}&timeMin=${startOfDay.toISOString()}&timeMax=${endOfDay.toISOString()}&singleEvents=true&orderBy=startTime&_cb=${cacheBuster}`;
-                    try {
-                        const response = await fetch(url);
-                        const data = await response.json();
-                        return (data.items || []).map(event => ({
-                            ...event,
-                            summary: (event.summary || "private").toLowerCase(),
-                            borderColor: config.color,
-                            glowColor: config.glow
-                        }));
-                    } catch (e) { return []; }
-                });
+            
+            const fetchPromises = calendarConfigs.map(async (config) => {
+                const url = `https://www.googleapis.com/calendar/v3/calendars/${encodeURIComponent(config.id)}/events?key=${API_KEY}&timeMin=${startOfDay.toISOString()}&timeMax=${endOfDay.toISOString()}&singleEvents=true&orderBy=startTime`;
+                try {
+                    const response = await fetch(url);
+                    const data = await response.json();
+                    return (data.items || []).map(event => ({
+                        ...event,
+                        summary: (event.summary || "private").toLowerCase(),
+                        borderColor: config.color,
+                        glowColor: config.glow
+                    }));
+                } catch (e) { return []; }
+            });
 
             const results = await Promise.all(fetchPromises);
             const allEvents = results.flat().sort((a, b) => new Date(a.start.dateTime || a.start.date) - new Date(b.start.dateTime || b.start.date));
@@ -154,7 +152,7 @@
                 `;
             });
 
-            container.innerHTML = htmlContent || '<div style="color:rgba(255,255,255,0.2); font-size:10px; letter-spacing:4px;">no signals detected</div>';
+            container.innerHTML = htmlContent || '<div style="color:rgba(255,255,255,0.2); font-size:10px; padding-left:10px;">no signals detected</div>';
         }
 
         fetchAllCalendars();
