@@ -7,12 +7,11 @@
         html, body {
             background-color: transparent; 
             margin: 0;
-            /* ZERO LEFT PADDING - Aligns with 'sched' */
+            /* ZERO LEFT PADDING - Perfectly flush alignment */
             padding: 25px 0px 25px 0px; 
             font-family: sans-serif;
             display: flex;
             flex-direction: column;
-            /* FORCED SEPARATION */
             gap: 50px; 
             overflow-x: hidden;
             text-transform: lowercase;
@@ -47,8 +46,6 @@
             position: relative;
             transition: all 0.3s ease;
             box-shadow: 0 4px 15px var(--glow-color);
-            /* This ensures the 50px gap is maintained regardless of internal height */
-            margin-bottom: 0px; 
         }
 
         .event-link:hover .event-pill {
@@ -67,11 +64,11 @@
             to { box-shadow: 0 0 45px #ffff64; }
         }
 
-        /* TIME: SEGMENTED RED */
+        /* TIME: SEGMENTED PURPLE - RGB(129, 82, 190) */
         .event-time {
             font-family: 'Share Tech Mono', monospace;
             font-size: 14px;
-            color: rgb(227, 20, 41); 
+            color: rgb(129, 82, 190); 
             letter-spacing: 1px;
             margin-right: 20px;
             white-space: nowrap;
@@ -152,7 +149,7 @@
                 `;
             });
 
-            container.innerHTML = htmlContent || '<div style="color:rgba(255,255,255,0.2); font-size:10px; padding-left:10px;">no signals detected</div>';
+            container.innerHTML = htmlContent || '<div style="color:rgba(255,255,255,0.2); font-size:10px;">no signals detected</div>';
         }
 
         fetchAllCalendars();
