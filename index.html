@@ -68,9 +68,9 @@
 
         .event-time {
             font-weight: 400; 
-            margin-right: 8px; /* Narrow gap */
+            margin-right: 8px;
             white-space: nowrap;
-            text-transform: lowercase; /* Lowercase time range */
+            text-transform: lowercase;
             color: rgba(255, 255, 255, 0.95);
         }
 
@@ -91,12 +91,12 @@
         const API_KEY = 'AIzaSyD0x1_dYTIdaCjAY-mJ_oYwDXXKj8y16R0';
         
         const calendarConfigs = [
-            { id: 's.alshwauva@gmail.com', color: 'rgba(204, 0, 47, 1.0)' }, 
-            { id: 'f006951abacb803c0d3ce7f56bad41baf5f8363ac71da5fd5d8258cc5b6f71d5@group.calendar.google.com', color: 'rgba(114, 37, 31, 1.0)' },
-            { id: '77cede4471f684268e82629f41d5a5b08e16786a9bc85b81a9938287e37b5bca@group.calendar.google.com', color: 'rgba(182, 77, 98, 1.0)' },
-            { id: '38d540c4f77bf5237793b3cbde8d18fbf23aa34a3bf9161c7fa035b79c68472c@group.calendar.google.com', color: 'rgba(155, 17, 30, 1.0)' },
-            { id: 'b25fbf0703934693ab2cf26d7a82669bd8a38b624ca3bf70a9eb46a16ec40799@group.calendar.google.com', color: 'rgba(204, 168, 168, 1.0)' },
-            { id: 'd9d2f73203f9382127c1697042669b5d46f2c6ecd297d8f2b28dd295978e4e07@group.calendar.google.com', color: 'rgba(70, 0, 0, 1.0)' } 
+            { id: 's.alshwauva@gmail.com', color: 'rgba(204, 0, 47, 0.6)' }, 
+            { id: 'f006951abacb803c0d3ce7f56bad41baf5f8363ac71da5fd5d8258cc5b6f71d5@group.calendar.google.com', color: 'rgba(114, 37, 31, 0.6)' },
+            { id: '77cede4471f684268e82629f41d5a5b08e16786a9bc85b81a9938287e37b5bca@group.calendar.google.com', color: 'rgba(182, 77, 98, 0.6)' },
+            { id: '38d540c4f77bf5237793b3cbde8d18fbf23aa34a3bf9161c7fa035b79c68472c@group.calendar.google.com', color: 'rgba(155, 17, 30, 0.6)' },
+            { id: 'b25fbf0703934693ab2cf26d7a82669bd8a38b624ca3bf70a9eb46a16ec40799@group.calendar.google.com', color: 'rgba(204, 168, 168, 0.6)' },
+            { id: 'd9d2f73203f9382127c1697042669b5d46f2c6ecd297d8f2b28dd295978e4e07@group.calendar.google.com', color: 'rgba(70, 0, 0, 0.6)' } 
         ];
 
         async function fetchAllCalendars() {
@@ -108,25 +108,34 @@
 
             let allEvents = [];
 
-            for (const config of calendarConfigs) {
+            // Fetch from all calendars
+            const fetchPromises = calendarConfigs.map(async (config) => {
                 const url = `https://www.googleapis.com/calendar/v3/calendars/${encodeURIComponent(config.id)}/events?key=${API_KEY}&timeMin=${startOfDay.toISOString()}&timeMax=${endOfDay.toISOString()}&singleEvents=true&orderBy=startTime`;
-                
                 try {
                     const response = await fetch(url);
                     const data = await response.json();
                     if (data.items) {
-                        allEvents = allEvents.concat(data.items.map(event => ({
+                        return data.items.map(event => ({
                             ...event,
                             displayColor: config.color
-                        })));
+                        }));
                     }
-                } catch (e) { console.error("Sync Error", e); }
-            }
+                    return [];
+                } catch (e) {
+                    console.error("Sync Error for " + config.id, e);
+                    return [];
+                }
+            });
 
+            // Wait for all calendars to finish fetching
+            const results = await Promise.all(fetchPromises);
+            allEvents = results.flat();
+
+            // Sort by start time
             allEvents.sort((a, b) => new Date(a.start.dateTime || a.start.date) - new Date(b.start.dateTime || b.start.date));
 
             const container = document.getElementById('calendar-content');
-            container.innerHTML = '';
+            let htmlContent = '';
 
             allEvents.forEach(event => {
                 const startT = new Date(event.start.dateTime || event.start.date);
@@ -137,7 +146,7 @@
                 const formatTime = (date) => date.toLocaleTimeString([], {hour: 'numeric', minute:'2-digit'}).replace(/\s+/g, '').toLowerCase();
                 const timeRange = `${formatTime(startT)} - ${formatTime(endT)}`;
                 
-                container.innerHTML += `
+                htmlContent += `
                     <a href="${eventUrl}" target="_blank" class="event-link">
                         <div class="event-pill ${isActive ? 'active-task' : ''}" style="background-color: ${event.displayColor}">
                             <span class="event-time">${timeRange}</span>
@@ -146,9 +155,12 @@
                     </a>
                 `;
             });
+
+            container.innerHTML = htmlContent || '<div style="color:white; opacity:0.5; padding:20px;">No events today</div>';
         }
+
         fetchAllCalendars();
-        setInterval(fetchAllCalendars, 300000);
+        setInterval(fetchAllCalendars, 60000); // Check every minute for active task
     </script>
 </body>
 </html>
