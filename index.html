@@ -3,7 +3,6 @@
 <head>
     <meta charset="UTF-8">
     <style>
-        /* Poppins (Medium 500 & SemiBold 600) */
         @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@500;600&display=swap');
 
         body {
@@ -15,7 +14,6 @@
             flex-direction: column;
             gap: 30px; 
             overflow-y: auto;
-            /* STRICT ALL CAPS */
             text-transform: uppercase;
         }
 
@@ -35,16 +33,17 @@
             font-weight: 600;
             letter-spacing: 3px; 
             
-            /* TEXT: VAMPIRE BLACK */
+            /* DARK INK TEXT */
             color: #080808; 
             
-            backdrop-filter: blur(25px);
-            -webkit-backdrop-filter: blur(25px);
-            border: 1px solid rgba(255, 255, 255, 0.25);
+            /* HEAVIER FROSTED LOOK */
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            border: 1px solid rgba(255, 255, 255, 0.2);
             
             box-shadow: 
-                inset 0 1px 1px rgba(255, 255, 255, 0.15),
-                0 12px 24px rgba(0, 0, 0, 0.3);
+                inset 0 1px 1px rgba(255, 255, 255, 0.1),
+                0 10px 20px rgba(0, 0, 0, 0.4);
             
             width: 320px; 
             box-sizing: border-box;
@@ -53,31 +52,27 @@
         }
 
         .event-link:hover .event-pill {
-            transform: translateY(-5px);
-            filter: brightness(1.05);
+            transform: translateY(-4px);
+            filter: brightness(1.1);
         }
 
-        /* YELLOW SPARKLE ACTIVE TASK */
         .active-task {
-            border: 2px solid rgba(255, 255, 100, 0.9) !important;
+            border: 2.5px solid rgba(255, 255, 100, 0.9) !important;
             z-index: 10;
-            animation: soft-sparkle 2.5s infinite alternate;
+            animation: soft-sparkle 2s infinite alternate;
         }
 
         @keyframes soft-sparkle {
-            from { box-shadow: 0 0 12px rgba(255, 255, 100, 0.2); transform: scale(1.01); }
-            to { box-shadow: 0 0 28px rgba(255, 255, 100, 0.6); transform: scale(1.03); }
+            from { box-shadow: 0 0 12px rgba(255, 255, 100, 0.3); transform: scale(1.01); }
+            to { box-shadow: 0 0 30px rgba(255, 255, 100, 0.7); transform: scale(1.03); }
         }
 
         .event-time {
             font-weight: 500; 
             margin-right: 18px;
             white-space: nowrap;
-            
-            /* TIME: CETACEAN BLUE */
             color: #001440; 
-            
-            background: rgba(255, 255, 255, 0.45);
+            background: rgba(255, 255, 255, 0.3);
             padding: 2px 10px;
             border-radius: 7px;
             font-size: 9.5px;
@@ -99,18 +94,18 @@
     <script>
         const API_KEY = 'AIzaSyD0x1_dYTIdaCjAY-mJ_oYwDXXKj8y16R0';
         
-        // REPLACED BRIGHT PURPLE WITH LOFI PINK/BLOSSOM
+        // DEEP SOLID COLORS FROM YOUR PALETTE (85% Opacity)
         const calendarConfigs = [
-            { id: 's.alshwauva@gmail.com', color: 'rgba(9, 158, 169, 0.6)' },      // Teal
-            { id: 'f006951abacb803c0d3ce7f56bad41baf5f8363ac71da5fd5d8258cc5b6f71d5@group.calendar.google.com', color: 'rgba(239, 131, 167, 0.65)' }, // Blossom Pink
-            { id: '77cede4471f684268e82629f41d5a5b08e16786a9bc85b81a9938287e37b5bca@group.calendar.google.com', color: 'rgba(127, 136, 134, 0.6)' }, // Gray-Lavender
-            { id: '38d540c4f77bf5237793b3cbde8d18fbf23aa34a3bf9161c7fa035b79c68472c@group.calendar.google.com', color: 'rgba(245, 166, 35, 0.6)' }, // Orange
-            { id: 'b25fbf0703934693ab2cf26d7a82669bd8a38b624ca3bf70a9eb46a16ec40799@group.calendar.google.com', color: 'rgba(83, 221, 209, 0.55)' }, // Mint
-            { id: 'd9d2f73203f9382127c1697042669b5d46f2c6ecd297d8f2b28dd295978e4e07@group.calendar.google.com', color: 'rgba(229, 92, 154, 0.6)' }, // Rose
-            { id: 'CALENDAR_ID_7', color: 'rgba(41, 14, 122, 0.65)' },             // Indigo
-            { id: 'CALENDAR_ID_8', color: 'rgba(240, 142, 108, 0.6)' },           // Peach
-            { id: 'CALENDAR_ID_9', color: 'rgba(78, 79, 227, 0.6)' },             // Sky
-            { id: 'CALENDAR_ID_10', color: 'rgba(44, 62, 80, 0.6)' }              // Slate
+            { id: 's.alshwauva@gmail.com', color: 'rgba(41, 14, 122, 0.85)' },      // Deep Outer Rim Indigo
+            { id: 'f006951abacb803c0d3ce7f56bad41baf5f8363ac71da5fd5d8258cc5b6f71d5@group.calendar.google.com', color: 'rgba(9, 158, 169, 0.85)' }, // Aquarium Teal
+            { id: '77cede4471f684268e82629f41d5a5b08e16786a9bc85b81a9938287e37b5bca@group.calendar.google.com', color: 'rgba(111, 28, 178, 0.85)' }, // Fuchsia Nebula
+            { id: '38d540c4f77bf5237793b3cbde8d18fbf23aa34a3bf9161c7fa035b79c68472c@group.calendar.google.com', color: 'rgba(227, 26, 224, 0.85)' }, // Pink Pride
+            { id: 'b25fbf0703934693ab2cf26d7a82669bd8a38b624ca3bf70a9eb46a16ec40799@group.calendar.google.com', color: 'rgba(167, 249, 172, 0.85)' }, // Mint Glow
+            { id: 'd9d2f73203f9382127c1697042669b5d46f2c6ecd297d8f2b28dd295978e4e07@group.calendar.google.com', color: 'rgba(240, 142, 108, 0.85)' }, // Peach Dawn
+            { id: 'CALENDAR_ID_7', color: 'rgba(78, 79, 227, 0.85)' },             // Electric Blue
+            { id: 'CALENDAR_ID_8', color: 'rgba(44, 62, 80, 0.85)' },              // Slate Night
+            { id: 'CALENDAR_ID_9', color: 'rgba(111, 28, 178, 0.75)' },            // Muted Purple
+            { id: 'CALENDAR_ID_10', color: 'rgba(9, 158, 169, 0.75)' }             // Muted Teal
         ];
 
         async function fetchAllCalendars() {
