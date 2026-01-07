@@ -3,7 +3,6 @@
 <head>
     <meta charset="UTF-8">
     <style>
-        /* New Font: Newsreader (Sophisticated & Editorial) */
         @import url('https://fonts.googleapis.com/css2?family=Newsreader:ital,wght@0,300;0,400;1,300&display=swap');
 
         body {
@@ -34,18 +33,14 @@
             backdrop-filter: blur(15px);
             -webkit-backdrop-filter: blur(15px);
             border: 1px solid rgba(255, 255, 255, 0.25);
-            
-            /* 3D Glass Depth */
             box-shadow: 
                 inset 0 1px 0 rgba(255, 255, 255, 0.3),
                 0 4px 12px rgba(0, 0, 0, 0.12);
-            
             width: 300px; 
             box-sizing: border-box;
             position: relative;
         }
 
-        /* Glass Shimmer Overlay */
         .event-pill::after {
             content: "";
             position: absolute;
@@ -109,22 +104,27 @@
             const now = new Date();
             const startOfDay = new Date(now); startOfDay.setHours(0,0,0,0);
             const endOfDay = new Date(now); endOfDay.setHours(23,59,59,999);
-
-            const cacheBuster = now.getTime(); // Forces a fresh fetch every time
-            let allEvents = [];
+            const cacheBuster = now.getTime();
 
             const fetchPromises = calendarConfigs.map(async (config) => {
-                // Added &_cb parameter to bust Google's cache
                 const url = `https://www.googleapis.com/calendar/v3/calendars/${encodeURIComponent(config.id)}/events?key=${API_KEY}&timeMin=${startOfDay.toISOString()}&timeMax=${endOfDay.toISOString()}&singleEvents=true&orderBy=startTime&_cb=${cacheBuster}`;
                 try {
                     const response = await fetch(url);
                     const data = await response.json();
-                    return (data.items || []).map(event => ({ ...event, displayColor: config.color }));
+                    
+                    if (data.items) {
+                        return data.items.map(event => {
+                            // FIX: Check multiple fields for the event name
+                            const title = event.summary || event.description || "Untitled Event";
+                            return { ...event, summary: title, displayColor: config.color };
+                        });
+                    }
+                    return [];
                 } catch (e) { return []; }
             });
 
             const results = await Promise.all(fetchPromises);
-            allEvents = results.flat().sort((a, b) => new Date(a.start.dateTime || a.start.date) - new Date(b.start.dateTime || b.start.date));
+            const allEvents = results.flat().sort((a, b) => new Date(a.start.dateTime || a.start.date) - new Date(b.start.dateTime || b.start.date));
 
             const container = document.getElementById('calendar-content');
             let htmlContent = '';
@@ -150,7 +150,7 @@
         }
 
         fetchAllCalendars();
-        setInterval(fetchAllCalendars, 60000); // Refreshes every minute
+        setInterval(fetchAllCalendars, 60000);
     </script>
 </body>
 </html>
