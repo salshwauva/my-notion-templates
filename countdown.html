@@ -3,12 +3,12 @@
 <head>
     <meta charset="UTF-8">
     <style>
-        @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@500;600&display=swap');
+        @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@600&display=swap');
 
         body {
             background-color: transparent;
             margin: 0;
-            padding: 30px; 
+            padding: 40px; 
             font-family: 'Poppins', sans-serif;
             display: flex;
             text-transform: lowercase;
@@ -19,13 +19,13 @@
             display: flex;
             align-items: center;
             gap: 15px;
-            padding: 8px 18px;
-            border-radius: 4px; /* Sharper edges for a technical look */
+            padding: 10px 20px;
+            border-radius: 4px;
             width: fit-content;
             white-space: nowrap;
             background-color: transparent;
             
-            /* PURE YELLOW PULSING BORDER */
+            /* YELLOW BORDER */
             border: 2px solid #ffff64;
             animation: yellow-pulse infinite ease-in-out;
         }
@@ -33,44 +33,42 @@
         @keyframes yellow-pulse {
             0% {
                 box-shadow: 0 0 5px #ffff64, inset 0 0 2px #ffff64;
-                border-color: rgba(255, 255, 100, 0.5);
+                opacity: 0.8;
             }
             50% {
                 box-shadow: 0 0 25px #ffff64, inset 0 0 10px #ffff64;
-                border-color: rgba(255, 255, 100, 1);
+                opacity: 1;
             }
             100% {
                 box-shadow: 0 0 5px #ffff64, inset 0 0 2px #ffff64;
-                border-color: rgba(255, 255, 100, 0.5);
+                opacity: 0.8;
             }
         }
 
-        /* HIGH-INTENSITY NEON TEXT */
-        .timer-digits, .timer-label {
-            color: #fff; /* White core for neon effect */
+        /* SATURATED NEON ORANGE TEXT */
+        .timer-digits, .timer-label, .unit-label {
+            color: #ff6d1f; /* Deep Saturated Neon Orange */
             font-weight: 600;
-            /* Layered Peach/Orange Glow */
+            /* Heavy Glow Stacking */
             text-shadow: 
-                0 0 5px #fff,
-                0 0 10px #f08e6c,
-                0 0 20px #f08e6c,
-                0 0 30px #f08e6c;
+                0 0 5px #ff6d1f,
+                0 0 15px #ff6d1f,
+                0 0 30px #ff4500,
+                0 0 50px #ff4500;
         }
 
         .timer-digits {
-            font-size: 16px;
+            font-size: 18px;
             letter-spacing: 1px;
         }
 
         .unit-label {
             font-size: 10px;
             margin-left: 2px;
-            /* Same glow for the 'd' */
-            text-shadow: 0 0 10px #f08e6c;
         }
 
         .timer-label {
-            font-size: 11px;
+            font-size: 12px;
             letter-spacing: 3px;
             margin-left: 5px;
         }
