@@ -5,7 +5,6 @@
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@500;600&display=swap');
 
-        /* ZERO OFFSET STYLING */
         html, body {
             background-color: transparent; 
             margin: 0;
@@ -24,58 +23,69 @@
             color: inherit;
             display: block;
             width: fit-content;
-            margin: 0; /* Strict zero margin */
+            margin: 0;
+            transition: transform 0.2s ease-out;
+        }
+
+        /* THE 'POP' HOVER EFFECT */
+        .event-link:hover {
+            transform: scale(1.04) translateX(5px);
+            z-index: 20;
         }
 
         .event-pill {
             display: flex;
-            align-items: flex-start;
+            align-items: center;
             padding: 10px 18px;
             border-radius: 12px;
-            font-size: 10px; 
-            font-weight: 600;
-            letter-spacing: 2px; 
-            color: #080808; 
             backdrop-filter: blur(15px);
             -webkit-backdrop-filter: blur(15px);
             border-width: 2.5px;
             border-style: solid;
-            width: 340px; /* Slightly wider to accommodate full time range */
+            width: 360px; 
             box-sizing: border-box;
             position: relative;
             transition: all 0.3s ease;
-            box-shadow: 0 0 15px var(--glow-color);
-            min-height: 45px; 
+            box-shadow: 0 4px 15px var(--glow-color);
+            min-height: 50px; 
         }
 
-        /* THICK ACTIVE BORDER */
+        .event-link:hover .event-pill {
+            filter: brightness(1.2);
+            box-shadow: 0 8px 25px var(--glow-color);
+        }
+
         .active-task {
             border-width: 6px !important;
             border-color: #ffff64 !important;
             animation: active-glow 1.5s infinite alternate ease-in-out;
-            z-index: 10;
         }
 
         @keyframes active-glow {
-            from { box-shadow: 0 0 15px #ffff64, inset 0 0 5px #ffff64; }
-            to { box-shadow: 0 0 45px #ffff64, inset 0 0 15px #ffff64; }
+            from { box-shadow: 0 0 15px #ffff64; }
+            to { box-shadow: 0 0 45px #ffff64; }
         }
 
+        /* TIME: NOW LARGER - YELLOW (252, 217, 42) */
         .event-time {
             font-weight: 600; 
+            font-size: 10px; /* Swapped size */
+            color: rgb(252, 217, 42); 
+            letter-spacing: 1px;
             margin-right: 15px;
             white-space: nowrap;
-            color: #080808; 
-            background: rgba(255, 255, 255, 0.7);
-            padding: 2px 8px;
-            border-radius: 5px;
-            font-size: 8.5px; /* Slightly smaller to fit "10am-11am" */
-            margin-top: 2px;
+            background: rgba(0, 0, 0, 0.2);
+            padding: 4px 10px;
+            border-radius: 6px;
         }
 
+        /* EVENT NAME: NOW SMALLER - ORANGE (232, 98, 43) */
         .event-name {
+            font-size: 8.5px; /* Swapped size */
+            font-weight: 600;
+            color: rgb(232, 98, 43);
+            letter-spacing: 2px;
             flex-grow: 1;
-            padding-top: 2px;
             line-height: 1.4;
             word-wrap: break-word;
         }
@@ -89,12 +99,12 @@
         const API_KEY = 'AIzaSyD0x1_dYTIdaCjAY-mJ_oYwDXXKj8y16R0';
         
         const calendarConfigs = [
-            { id: 's.alshwauva@gmail.com', color: '#ff6d1f', glow: 'rgba(255, 109, 31, 0.6)' },
-            { id: 'f006951abacb803c0d3ce7f56bad41baf5f8363ac71da5fd5d8258cc5b6f71d5@group.calendar.google.com', color: '#a7f9ac', glow: 'rgba(167, 249, 172, 0.6)' },
-            { id: '77cede4471f684268e82629f41d5a5b08e16786a9bc85b81a9938287e37b5bca@group.calendar.google.com', color: '#03b2ed', glow: 'rgba(3, 178, 237, 0.6)' },   
-            { id: '38d540c4f77bf5237793b3cbde8d18fbf23aa34a3bf9161c7fa035b79c68472c@group.calendar.google.com', color: '#fd59ca', glow: 'rgba(253, 89, 202, 0.6)' },  
-            { id: 'b25fbf0703934693ab2cf26d7a82669bd8a38b624ca3bf70a9eb46a16ec40799@group.calendar.google.com', color: '#ffff64', glow: 'rgba(255, 255, 100, 0.6)' }, 
-            { id: 'd9d2f73203f9382127c1697042669b5d46f2c6ecd297d8f2b28dd295978e4e07@group.calendar.google.com', color: '#6f1cb2', glow: 'rgba(111, 28, 178, 0.6)' }   
+            { id: 's.alshwauva@gmail.com', color: '#ff6d1f', glow: 'rgba(255, 109, 31, 0.4)' },
+            { id: 'f006951abacb803c0d3ce7f56bad41baf5f8363ac71da5fd5d8258cc5b6f71d5@group.calendar.google.com', color: '#a7f9ac', glow: 'rgba(167, 249, 172, 0.4)' },
+            { id: '77cede4471f684268e82629f41d5a5b08e16786a9bc85b81a9938287e37b5bca@group.calendar.google.com', color: '#03b2ed', glow: 'rgba(3, 178, 237, 0.4)' },   
+            { id: '38d540c4f77bf5237793b3cbde8d18fbf23aa34a3bf9161c7fa035b79c68472c@group.calendar.google.com', color: '#fd59ca', glow: 'rgba(253, 89, 202, 0.4)' },  
+            { id: 'b25fbf0703934693ab2cf26d7a82669bd8a38b624ca3bf70a9eb46a16ec40799@group.calendar.google.com', color: '#ffff64', glow: 'rgba(255, 255, 100, 0.4)' }, 
+            { id: 'd9d2f73203f9382127c1697042669b5d46f2c6ecd297d8f2b28dd295978e4e07@group.calendar.google.com', color: '#6f1cb2', glow: 'rgba(111, 28, 178, 0.4)' }   
         ];
 
         async function fetchAllCalendars() {
@@ -134,14 +144,12 @@
                 const dynamicHeight = Math.max(50, durationMinutes * 1.2);
 
                 const formatTime = (date) => date.toLocaleTimeString([], {hour: 'numeric', minute:'2-digit'}).replace(/\s+/g, '').toLowerCase();
-                
-                // CREATE THE FULL TIME RANGE STRING
                 const timeRange = `${formatTime(startT)}-${formatTime(endT)}`;
                 
                 htmlContent += `
                     <a href="${event.htmlLink || "#"}" target="_blank" class="event-link">
                         <div class="event-pill ${isActive ? 'active-task' : ''}" 
-                             style="border-color: ${event.borderColor}; --glow-color: ${event.glowColor}; background-color: rgba(255,255,255,0.1); height: ${dynamicHeight}px;">
+                             style="border-color: ${event.borderColor}; --glow-color: ${event.glowColor}; background-color: rgba(255,255,255,0.05); height: ${dynamicHeight}px;">
                             <span class="event-time">${timeRange}</span>
                             <span class="event-name">${event.summary}</span>
                         </div>
