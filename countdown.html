@@ -8,11 +8,12 @@
         body {
             background-color: transparent;
             margin: 0;
-            padding: 40px; 
+            /* Extra padding so Notion doesn't cut off the glow */
+            padding: 50px; 
             font-family: 'Poppins', sans-serif;
             display: flex;
             text-transform: lowercase;
-            overflow: hidden;
+            overflow: visible;
         }
 
         .timer-pill {
@@ -25,50 +26,50 @@
             white-space: nowrap;
             background-color: transparent;
             
-            /* YELLOW BORDER */
+            /* BRIGHT YELLOW BORDER */
             border: 2px solid #ffff64;
-            animation: yellow-pulse infinite ease-in-out;
+            
+            /* THE PULSE: Controls size and glow intensity */
+            animation: aggressive-pulse infinite ease-in-out;
         }
 
-        @keyframes yellow-pulse {
+        @keyframes aggressive-pulse {
             0% {
-                box-shadow: 0 0 5px #ffff64, inset 0 0 2px #ffff64;
-                opacity: 0.8;
+                box-shadow: 0 0 10px #ffff64, inset 0 0 5px #ffff64;
+                transform: scale(1);
             }
             50% {
-                box-shadow: 0 0 25px #ffff64, inset 0 0 10px #ffff64;
-                opacity: 1;
+                /* Huge outward glow and slight growth to make it visible */
+                box-shadow: 0 0 40px #ffff64, 0 0 70px rgba(255, 255, 100, 0.4), inset 0 0 15px #ffff64;
+                transform: scale(1.03);
             }
             100% {
-                box-shadow: 0 0 5px #ffff64, inset 0 0 2px #ffff64;
-                opacity: 0.8;
+                box-shadow: 0 0 10px #ffff64, inset 0 0 5px #ffff64;
+                transform: scale(1);
             }
         }
 
-        /* SATURATED NEON ORANGE TEXT */
+        /* VIBRANT NEON ORANGE TEXT */
         .timer-digits, .timer-label, .unit-label {
-            color: #ff6d1f; /* Deep Saturated Neon Orange */
+            color: #ff6d1f; 
             font-weight: 600;
-            /* Heavy Glow Stacking */
             text-shadow: 
-                0 0 5px #ff6d1f,
-                0 0 15px #ff6d1f,
-                0 0 30px #ff4500,
-                0 0 50px #ff4500;
+                0 0 10px #ff6d1f,
+                0 0 25px #ff4500;
         }
 
         .timer-digits {
-            font-size: 18px;
+            font-size: 20px; /* Slightly larger to be the focal point */
             letter-spacing: 1px;
         }
 
         .unit-label {
-            font-size: 10px;
+            font-size: 11px;
             margin-left: 2px;
         }
 
         .timer-label {
-            font-size: 12px;
+            font-size: 13px;
             letter-spacing: 3px;
             margin-left: 5px;
         }
@@ -93,9 +94,10 @@
             const container = document.getElementById('countdown-target');
             const daysLeft = calculateDays(eventData.date);
             
-            let speed = "3s"; 
-            if (daysLeft <= 7) speed = "0.8s";
-            else if (daysLeft <= 30) speed = "1.8s";
+            // Accelerated speed for high-priority pulses
+            let speed = "2.5s"; 
+            if (daysLeft <= 7) speed = "0.7s";
+            else if (daysLeft <= 30) speed = "1.5s";
 
             const pill = document.createElement('div');
             pill.className = 'timer-pill';
