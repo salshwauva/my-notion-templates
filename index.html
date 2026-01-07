@@ -15,6 +15,7 @@
             flex-direction: column;
             gap: 30px; 
             overflow-y: auto;
+            /* STRICT ALL CAPS */
             text-transform: uppercase;
         }
 
@@ -34,10 +35,9 @@
             font-weight: 600;
             letter-spacing: 3px; 
             
-            /* EVENT NAME COLOR: Vampire Black */
+            /* TEXT: VAMPIRE BLACK */
             color: #080808; 
             
-            /* Slightly more opaque glass to support dark text */
             backdrop-filter: blur(25px);
             -webkit-backdrop-filter: blur(25px);
             border: 1px solid rgba(255, 255, 255, 0.25);
@@ -74,7 +74,7 @@
             margin-right: 18px;
             white-space: nowrap;
             
-            /* TIME COLOR: Cetacean Blue */
+            /* TIME: CETACEAN BLUE */
             color: #001440; 
             
             background: rgba(255, 255, 255, 0.45);
@@ -99,17 +99,18 @@
     <script>
         const API_KEY = 'AIzaSyD0x1_dYTIdaCjAY-mJ_oYwDXXKj8y16R0';
         
+        // REPLACED BRIGHT PURPLE WITH LOFI PINK/BLOSSOM
         const calendarConfigs = [
-            { id: 's.alshwauva@gmail.com', color: 'rgba(9, 158, 169, 0.6)' },      
-            { id: 'f006951abacb803c0d3ce7f56bad41baf5f8363ac71da5fd5d8258cc5b6f71d5@group.calendar.google.com', color: 'rgba(111, 28, 178, 0.6)' }, 
-            { id: '77cede4471f684268e82629f41d5a5b08e16786a9bc85b81a9938287e37b5bca@group.calendar.google.com', color: 'rgba(127, 136, 134, 0.6)' }, 
-            { id: '38d540c4f77bf5237793b3cbde8d18fbf23aa34a3bf9161c7fa035b79c68472c@group.calendar.google.com', color: 'rgba(245, 166, 35, 0.6)' }, 
-            { id: 'b25fbf0703934693ab2cf26d7a82669bd8a38b624ca3bf70a9eb46a16ec40799@group.calendar.google.com', color: 'rgba(83, 221, 209, 0.55)' }, 
-            { id: 'd9d2f73203f9382127c1697042669b5d46f2c6ecd297d8f2b28dd295978e4e07@group.calendar.google.com', color: 'rgba(229, 92, 154, 0.6)' }, 
-            { id: 'CALENDAR_ID_7', color: 'rgba(41, 14, 122, 0.65)' },             
-            { id: 'CALENDAR_ID_8', color: 'rgba(240, 142, 108, 0.6)' },          
-            { id: 'CALENDAR_ID_9', color: 'rgba(78, 79, 227, 0.6)' },             
-            { id: 'CALENDAR_ID_10', color: 'rgba(44, 62, 80, 0.6)' }             
+            { id: 's.alshwauva@gmail.com', color: 'rgba(9, 158, 169, 0.6)' },      // Teal
+            { id: 'f006951abacb803c0d3ce7f56bad41baf5f8363ac71da5fd5d8258cc5b6f71d5@group.calendar.google.com', color: 'rgba(239, 131, 167, 0.65)' }, // Blossom Pink
+            { id: '77cede4471f684268e82629f41d5a5b08e16786a9bc85b81a9938287e37b5bca@group.calendar.google.com', color: 'rgba(127, 136, 134, 0.6)' }, // Gray-Lavender
+            { id: '38d540c4f77bf5237793b3cbde8d18fbf23aa34a3bf9161c7fa035b79c68472c@group.calendar.google.com', color: 'rgba(245, 166, 35, 0.6)' }, // Orange
+            { id: 'b25fbf0703934693ab2cf26d7a82669bd8a38b624ca3bf70a9eb46a16ec40799@group.calendar.google.com', color: 'rgba(83, 221, 209, 0.55)' }, // Mint
+            { id: 'd9d2f73203f9382127c1697042669b5d46f2c6ecd297d8f2b28dd295978e4e07@group.calendar.google.com', color: 'rgba(229, 92, 154, 0.6)' }, // Rose
+            { id: 'CALENDAR_ID_7', color: 'rgba(41, 14, 122, 0.65)' },             // Indigo
+            { id: 'CALENDAR_ID_8', color: 'rgba(240, 142, 108, 0.6)' },           // Peach
+            { id: 'CALENDAR_ID_9', color: 'rgba(78, 79, 227, 0.6)' },             // Sky
+            { id: 'CALENDAR_ID_10', color: 'rgba(44, 62, 80, 0.6)' }              // Slate
         ];
 
         async function fetchAllCalendars() {
