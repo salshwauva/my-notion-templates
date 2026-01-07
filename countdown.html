@@ -5,23 +5,22 @@
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@600&display=swap');
 
-        body {
+        /* ZERO GAP / ZERO PADDING / ZERO MARGIN */
+        html, body {
             background-color: transparent;
             margin: 0;
-            /* Padding only on top/bottom to allow glow space; 0 on left */
-            padding: 40px 0px; 
+            padding: 0;
             font-family: 'Poppins', sans-serif;
             display: flex;
             text-transform: lowercase;
-            overflow: visible;
-            justify-content: flex-start;
+            overflow: hidden; /* Strict container */
         }
 
         .timer-pill {
             display: flex;
             align-items: center;
-            gap: 15px;
-            padding: 10px 20px;
+            gap: 12px;
+            padding: 8px 16px;
             border-radius: 4px;
             width: fit-content;
             white-space: nowrap;
@@ -30,25 +29,25 @@
             /* BRIGHT YELLOW BORDER */
             border: 2px solid #ffff64;
             
-            /* AGGRESSIVE PULSE */
+            /* PULSE - SHADOW ONLY TO PREVENT OFFSET SHIFTS */
             animation: aggressive-pulse infinite ease-in-out;
             
-            /* Ensures it stays left-aligned during scaling */
-            transform-origin: left center;
+            /* RESETS POSITIONING */
+            margin: 0;
+            position: absolute;
+            top: 0;
+            left: 0;
         }
 
         @keyframes aggressive-pulse {
             0% {
-                box-shadow: 0 0 10px #ffff64, inset 0 0 5px #ffff64;
-                transform: scale(1);
+                box-shadow: 0 0 5px #ffff64, inset 0 0 2px #ffff64;
             }
             50% {
-                box-shadow: 0 0 40px #ffff64, 0 0 70px rgba(255, 255, 100, 0.4), inset 0 0 15px #ffff64;
-                transform: scale(1.03);
+                box-shadow: 0 0 30px #ffff64, inset 0 0 10px #ffff64;
             }
             100% {
-                box-shadow: 0 0 10px #ffff64, inset 0 0 5px #ffff64;
-                transform: scale(1);
+                box-shadow: 0 0 5px #ffff64, inset 0 0 2px #ffff64;
             }
         }
 
@@ -58,7 +57,7 @@
             font-weight: 600;
             text-shadow: 
                 0 0 10px #ff6d1f,
-                0 0 25px #ff4500;
+                0 0 20px #ff4500;
         }
 
         .timer-digits {
