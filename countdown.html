@@ -8,130 +8,109 @@
         body {
             background-color: transparent;
             margin: 0;
-            padding: 60px; /* Extra room for high-intensity glows */
+            padding: 20px; 
             font-family: 'Poppins', sans-serif;
             display: flex;
-            flex-direction: column;
-            gap: 100px; 
-            overflow-y: auto;
             text-transform: lowercase;
-            align-items: flex-start;
+            overflow: hidden;
         }
 
         .timer-pill {
             display: flex;
             align-items: center;
-            gap: 15px;
-            padding: 8px 16px;
-            border-radius: 10px;
+            gap: 12px;
+            padding: 6px 14px;
+            border-radius: 8px;
             width: fit-content;
             white-space: nowrap;
             
-            backdrop-filter: blur(20px);
-            -webkit-backdrop-filter: blur(20px);
-            border: 1.5px solid rgba(255, 255, 255, 0.25);
-            position: relative;
+            background-color: transparent;
             
-            /* Standard pulse animation - duration set via JS */
+            /* NEON PEACH BORDER */
+            border: 1.5px solid #f08e6c;
+            
+            /* NEON PEACH GLOW BOX */
             animation: pulse-glow infinite ease-in-out;
         }
 
         @keyframes pulse-glow {
             0% {
-                box-shadow: 
-                    inset 0 1px 1px rgba(255, 255, 255, 0.2),
-                    0 0 15px rgba(255, 255, 100, 0.3), 
-                    0 0 5px rgba(255, 255, 100, 0.1);
+                box-shadow: 0 0 5px rgba(240, 142, 108, 0.3), inset 0 0 2px rgba(240, 142, 108, 0.2);
             }
             50% {
-                box-shadow: 
-                    inset 0 1px 1px rgba(255, 255, 255, 0.2),
-                    0 0 35px rgba(255, 255, 100, 0.7), 
-                    0 0 15px rgba(255, 255, 100, 0.4);
+                box-shadow: 0 0 20px rgba(240, 142, 108, 0.6), inset 0 0 5px rgba(240, 142, 108, 0.3);
             }
             100% {
-                box-shadow: 
-                    inset 0 1px 1px rgba(255, 255, 255, 0.2),
-                    0 0 15px rgba(255, 255, 100, 0.3), 
-                    0 0 5px rgba(255, 255, 100, 0.1);
+                box-shadow: 0 0 5px rgba(240, 142, 108, 0.3), inset 0 0 2px rgba(240, 142, 108, 0.2);
             }
         }
 
-        .timer-label {
-            font-size: 9px;
-            font-weight: 600;
-            letter-spacing: 3px;
-            color: #080808; 
-        }
-
+        /* PEACH NEON TEXT */
         .timer-digits {
             display: flex;
             align-items: baseline;
-            font-size: 11px;
+            font-size: 14px;
             font-weight: 600;
-            color: #080808;
+            color: #f08e6c; 
             letter-spacing: 1px;
+            text-shadow: 0 0 8px rgba(240, 142, 108, 0.4);
         }
 
         .unit-label {
-            font-size: 8.5px;
+            font-size: 9px;
             font-weight: 500;
-            color: #001440;
+            color: #f08e6c;
             margin-left: 1px;
             opacity: 0.8;
         }
-        
-        .timer-pill:last-child {
-            margin-bottom: 60px;
+
+        .timer-label {
+            font-size: 10px;
+            font-weight: 600;
+            letter-spacing: 2.5px;
+            color: #f08e6c;
+            text-shadow: 0 0 8px rgba(240, 142, 108, 0.4);
         }
     </style>
 </head>
 <body>
 
-    <div id="countdown-wrapper"></div>
+    <div id="countdown-target"></div>
 
     <script>
-        // INPUT YOUR DATES AND LABELS HERE
-        const countdownData = [
-            { label: "new year", date: "2027-01-01T00:00:00", color: "rgba(40, 1, 32, 0.9)" },        
-            { label: "project alpha", date: "2026-03-15T00:00:00", color: "rgba(69, 0, 99, 0.9)" }, 
-            { label: "spring equinox", date: "2026-03-20T00:00:00", color: "rgba(148, 20, 209, 0.9)" }, 
-            { label: "summer launch", date: "2026-06-01T00:00:00", color: "rgba(3, 178, 237, 0.9)" }
-        ];
+        const eventData = { 
+            label: "target deadline", 
+            date: "2026-03-15T00:00:00"
+        };
 
         function calculateDays(targetDate) {
             const distance = new Date(targetDate).getTime() - new Date().getTime();
             return Math.ceil(distance / (1000 * 60 * 60 * 24));
         }
 
-        function initCountdowns() {
-            const wrapper = document.getElementById('countdown-wrapper');
+        function initCountdown() {
+            const container = document.getElementById('countdown-target');
+            const daysLeft = calculateDays(eventData.date);
             
-            countdownData.forEach((item, index) => {
-                const container = document.createElement('div');
-                container.className = 'timer-pill';
-                container.style.backgroundColor = item.color;
-                
-                const daysLeft = calculateDays(item.date);
-                
-                // DYNAMIC PULSE SPEED
-                let speed = "5s"; // Default slow
-                if (daysLeft <= 7) speed = "1s";      // Urgent
-                else if (daysLeft <= 30) speed = "2.5s"; // Approaching
-                
-                container.style.animationDuration = speed;
+            let speed = "4s"; 
+            if (daysLeft <= 7) speed = "1.2s";
+            else if (daysLeft <= 30) speed = "2.5s";
 
-                container.innerHTML = `
-                    <div class="timer-label">${item.label}</div>
-                    <div class="timer-digits">
-                        ${daysLeft >= 0 ? daysLeft + '<span class="unit-label">d</span>' : 'completed'}
-                    </div>
-                `;
-                wrapper.appendChild(container);
-            });
+            const pill = document.createElement('div');
+            pill.className = 'timer-pill';
+            pill.style.animationDuration = speed;
+
+            pill.innerHTML = `
+                <div class="timer-digits">
+                    ${daysLeft >= 0 ? daysLeft + '<span class="unit-label">d</span>' : 'done'}
+                </div>
+                <div class="timer-label">${eventData.label}</div>
+            `;
+            
+            container.appendChild(pill);
         }
 
-        initCountdowns();
+        initCountdown();
     </script>
 </body>
 </html>
