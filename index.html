@@ -114,8 +114,16 @@
                     
                     if (data.items) {
                         return data.items.map(event => {
-                            // FIX: Check multiple fields for the event name
-                            const title = event.summary || event.description || "Untitled Event";
+                            // IMPROVED NAME LOGIC
+                            let title = "Private Event"; // Default fallback
+                            if (event.summary && event.summary !== "") {
+                                title = event.summary;
+                            } else if (event.description && event.description !== "") {
+                                title = event.description;
+                            } else if (event.organizer && event.organizer.displayName) {
+                                title = event.organizer.displayName;
+                            }
+                            
                             return { ...event, summary: title, displayColor: config.color };
                         });
                     }
