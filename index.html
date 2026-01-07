@@ -3,7 +3,6 @@
 <head>
     <meta charset="UTF-8">
     <style>
-        /* Poppins (Medium 500 & SemiBold 600) */
         @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@500;600&display=swap');
 
         body {
@@ -15,7 +14,7 @@
             flex-direction: column;
             gap: 30px; 
             overflow-y: auto;
-            text-transform: uppercase;
+            text-transform: lowercase; /* Matches your countdown style */
         }
 
         .event-link {
@@ -29,24 +28,20 @@
             display: flex;
             align-items: center;
             padding: 10px 18px;
-            border-radius: 14px;
-            
-            /* SMALLER EVENT TEXT */
-            font-size: 9px; 
+            border-radius: 12px;
+            font-size: 10px; 
             font-weight: 600;
-            letter-spacing: 3.5px; 
+            letter-spacing: 2px; 
             
-            /* DARK INK TEXT */
+            /* DARK INK TEXT FOR READABILITY */
             color: #080808; 
             
-            /* REVERTED TO SOLID/FROSTED HYBRID */
-            backdrop-filter: blur(20px);
-            -webkit-backdrop-filter: blur(20px);
-            border: 1px solid rgba(255, 255, 255, 0.15);
+            backdrop-filter: blur(15px);
+            -webkit-backdrop-filter: blur(15px);
             
-            box-shadow: 
-                inset 0 1px 1px rgba(255, 255, 255, 0.1),
-                0 10px 25px rgba(0, 0, 0, 0.45);
+            /* THICK GLOWING BORDER */
+            border-width: 2px;
+            border-style: solid;
             
             width: 320px; 
             box-sizing: border-box;
@@ -54,33 +49,35 @@
             transition: transform 0.2s ease;
         }
 
+        /* NEON GLOW EFFECTS BASED ON BORDER COLOR */
+        .event-pill {
+            box-shadow: 0 0 15px var(--glow-color);
+        }
+
         .event-link:hover .event-pill {
             transform: translateY(-4px);
-            filter: brightness(1.15);
+            filter: brightness(1.2);
         }
 
-        /* YELLOW SPARKLE ACTIVE TASK */
         .active-task {
-            border: 2.5px solid rgba(255, 255, 100, 0.9) !important;
-            z-index: 10;
-            animation: soft-sparkle 2s infinite alternate;
+            border: 3px solid #ffff64 !important; /* Yellow pulse for active task */
+            animation: active-glow 2s infinite alternate;
         }
 
-        @keyframes soft-sparkle {
-            from { box-shadow: 0 0 12px rgba(255, 255, 100, 0.3); transform: scale(1.01); }
-            to { box-shadow: 0 0 30px rgba(255, 255, 100, 0.7); transform: scale(1.03); }
+        @keyframes active-glow {
+            from { box-shadow: 0 0 10px #ffff64; }
+            to { box-shadow: 0 0 30px #ffff64; }
         }
 
         .event-time {
-            font-weight: 500; 
+            font-weight: 600; 
             margin-right: 18px;
             white-space: nowrap;
-            color: #001440; 
-            background: rgba(255, 255, 255, 0.35);
-            padding: 2px 10px;
-            border-radius: 7px;
-            font-size: 9.5px;
-            letter-spacing: 1.5px;
+            color: #080808; 
+            background: rgba(255, 255, 255, 0.4);
+            padding: 2px 8px;
+            border-radius: 5px;
+            font-size: 9px;
         }
 
         .event-name {
@@ -98,18 +95,14 @@
     <script>
         const API_KEY = 'AIzaSyD0x1_dYTIdaCjAY-mJ_oYwDXXKj8y16R0';
         
-        // REVERTED TO 90% OPACITY
+        // SATURATED NEON PALETTE
         const calendarConfigs = [
-            { id: 's.alshwauva@gmail.com', color: 'rgba(40, 1, 32, 0.9)' },        
-            { id: 'f006951abacb803c0d3ce7f56bad41baf5f8363ac71da5fd5d8258cc5b6f71d5@group.calendar.google.com', color: 'rgba(69, 0, 99, 0.9)' }, 
-            { id: '77cede4471f684268e82629f41d5a5b08e16786a9bc85b81a9938287e37b5bca@group.calendar.google.com', color: 'rgba(148, 20, 209, 0.9)' }, 
-            { id: '38d540c4f77bf5237793b3cbde8d18fbf23aa34a3bf9161c7fa035b79c68472c@group.calendar.google.com', color: 'rgba(24, 12, 61, 0.9)' }, 
-            { id: 'b25fbf0703934693ab2cf26d7a82669bd8a38b624ca3bf70a9eb46a16ec40799@group.calendar.google.com', color: 'rgba(55, 32, 110, 0.9)' }, 
-            { id: 'd9d2f73203f9382127c1697042669b5d46f2c6ecd297d8f2b28dd295978e4e07@group.calendar.google.com', color: 'rgba(3, 178, 237, 0.9)' }, 
-            { id: 'CALENDAR_ID_7', color: 'rgba(253, 89, 202, 0.9)' },             
-            { id: 'CALENDAR_ID_8', color: 'rgba(186, 110, 220, 0.9)' },          
-            { id: 'CALENDAR_ID_9', color: 'rgba(120, 155, 235, 0.9)' },             
-            { id: 'CALENDAR_ID_10', color: 'rgba(210, 60, 155, 0.9)' }             
+            { id: 's.alshwauva@gmail.com', color: '#ff6d1f', glow: 'rgba(255, 109, 31, 0.6)' },      // NEON ORANGE
+            { id: 'f006951abacb803c0d3ce7f56bad41baf5f8363ac71da5fd5d8258cc5b6f71d5@group.calendar.google.com', color: '#a7f9ac', glow: 'rgba(167, 249, 172, 0.6)' }, // NEON MINT
+            { id: '77cede4471f684268e82629f41d5a5b08e16786a9bc85b81a9938287e37b5bca@group.calendar.google.com', color: '#03b2ed', glow: 'rgba(3, 178, 237, 0.6)' },   // NEON CYAN
+            { id: '38d540c4f77bf5237793b3cbde8d18fbf23aa34a3bf9161c7fa035b79c68472c@group.calendar.google.com', color: '#fd59ca', glow: 'rgba(253, 89, 202, 0.6)' },  // NEON PINK
+            { id: 'b25fbf0703934693ab2cf26d7a82669bd8a38b624ca3bf70a9eb46a16ec40799@group.calendar.google.com', color: '#ffff64', glow: 'rgba(255, 255, 100, 0.6)' }, // NEON YELLOW
+            { id: 'd9d2f73203f9382127c1697042669b5d46f2c6ecd297d8f2b28dd295978e4e07@group.calendar.google.com', color: '#6f1cb2', glow: 'rgba(111, 28, 178, 0.6)' }   // NEON VIOLET
         ];
 
         async function fetchAllCalendars() {
@@ -127,8 +120,9 @@
                         const data = await response.json();
                         return (data.items || []).map(event => ({
                             ...event,
-                            summary: (event.summary || "private event").toUpperCase(),
-                            displayColor: config.color
+                            summary: (event.summary || "private").toLowerCase(),
+                            borderColor: config.color,
+                            glowColor: config.glow
                         }));
                     } catch (e) { return []; }
                 });
@@ -144,26 +138,23 @@
                 const endT = new Date(event.end.dateTime || event.end.date);
                 const isActive = now >= startT && now <= endT;
                 
-                const durationMinutes = (endT - startT) / (1000 * 60);
-                const calculatedHeight = Math.min(Math.max(45 + (durationMinutes * 0.35), 45), 130);
-                const formatTime = (date) => date.toLocaleTimeString([], {hour: 'numeric', minute:'2-digit'}).replace(/\s+/g, '').toUpperCase();
+                const formatTime = (date) => date.toLocaleTimeString([], {hour: 'numeric', minute:'2-digit'}).replace(/\s+/g, '').toLowerCase();
                 
                 htmlContent += `
                     <a href="${event.htmlLink || "#"}" target="_blank" class="event-link">
                         <div class="event-pill ${isActive ? 'active-task' : ''}" 
-                             style="background-color: ${event.displayColor}; height: ${calculatedHeight}px;">
-                            <span class="event-time">${formatTime(startT)}-${formatTime(endT)}</span>
+                             style="border-color: ${event.borderColor}; --glow-color: ${event.glowColor}; background-color: rgba(255,255,255,0.05);">
+                            <span class="event-time">${formatTime(startT)}</span>
                             <span class="event-name">${event.summary}</span>
                         </div>
                     </a>
                 `;
             });
 
-            container.innerHTML = htmlContent || '<div style="color:rgba(255,255,255,0.2); font-size:10px; letter-spacing:4px;">NO SIGNALS DETECTED</div>';
+            container.innerHTML = htmlContent || '<div style="color:rgba(255,255,255,0.2); font-size:10px; letter-spacing:4px;">no signals detected</div>';
         }
 
         fetchAllCalendars();
-        window.addEventListener('focus', fetchAllCalendars);
         setInterval(fetchAllCalendars, 30000);
     </script>
 </body>
