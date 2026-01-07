@@ -8,20 +8,23 @@
         body {
             background-color: transparent; 
             margin: 0;
-            padding: 20px;
+            padding: 0; /* REMOVED ALL BODY PADDING */
             font-family: 'Poppins', sans-serif;
             display: flex;
             flex-direction: column;
-            gap: 30px; 
-            overflow-y: auto;
-            text-transform: lowercase; /* Matches your countdown style */
+            gap: 25px; 
+            overflow-x: hidden;
+            text-transform: lowercase;
+            align-items: flex-start; /* Aligns flush to the left */
         }
 
         .event-link {
             text-decoration: none;
             color: inherit;
             display: block;
-            transition: all 0.3s ease;
+            width: fit-content;
+            /* Margin added here to prevent glow clipping while body remains 0 padding */
+            margin: 10px 20px; 
         }
 
         .event-pill {
@@ -32,49 +35,40 @@
             font-size: 10px; 
             font-weight: 600;
             letter-spacing: 2px; 
-            
-            /* DARK INK TEXT FOR READABILITY */
             color: #080808; 
-            
             backdrop-filter: blur(15px);
             -webkit-backdrop-filter: blur(15px);
-            
-            /* THICK GLOWING BORDER */
             border-width: 2px;
             border-style: solid;
-            
             width: 320px; 
             box-sizing: border-box;
             position: relative;
             transition: transform 0.2s ease;
-        }
-
-        /* NEON GLOW EFFECTS BASED ON BORDER COLOR */
-        .event-pill {
             box-shadow: 0 0 15px var(--glow-color);
         }
 
         .event-link:hover .event-pill {
-            transform: translateY(-4px);
+            transform: scale(1.02);
             filter: brightness(1.2);
         }
 
+        /* ACTIVE TASK WITH YELLOW PULSE */
         .active-task {
-            border: 3px solid #ffff64 !important; /* Yellow pulse for active task */
-            animation: active-glow 2s infinite alternate;
+            border: 3px solid #ffff64 !important;
+            animation: active-glow 2s infinite alternate ease-in-out;
         }
 
         @keyframes active-glow {
-            from { box-shadow: 0 0 10px #ffff64; }
-            to { box-shadow: 0 0 30px #ffff64; }
+            from { box-shadow: 0 0 10px #ffff64; transform: scale(1); }
+            to { box-shadow: 0 0 30px #ffff64; transform: scale(1.03); }
         }
 
         .event-time {
             font-weight: 600; 
-            margin-right: 18px;
+            margin-right: 15px;
             white-space: nowrap;
             color: #080808; 
-            background: rgba(255, 255, 255, 0.4);
+            background: rgba(255, 255, 255, 0.5);
             padding: 2px 8px;
             border-radius: 5px;
             font-size: 9px;
@@ -95,14 +89,14 @@
     <script>
         const API_KEY = 'AIzaSyD0x1_dYTIdaCjAY-mJ_oYwDXXKj8y16R0';
         
-        // SATURATED NEON PALETTE
+        // UPDATED NEON PALETTE
         const calendarConfigs = [
-            { id: 's.alshwauva@gmail.com', color: '#ff6d1f', glow: 'rgba(255, 109, 31, 0.6)' },      // NEON ORANGE
-            { id: 'f006951abacb803c0d3ce7f56bad41baf5f8363ac71da5fd5d8258cc5b6f71d5@group.calendar.google.com', color: '#a7f9ac', glow: 'rgba(167, 249, 172, 0.6)' }, // NEON MINT
-            { id: '77cede4471f684268e82629f41d5a5b08e16786a9bc85b81a9938287e37b5bca@group.calendar.google.com', color: '#03b2ed', glow: 'rgba(3, 178, 237, 0.6)' },   // NEON CYAN
-            { id: '38d540c4f77bf5237793b3cbde8d18fbf23aa34a3bf9161c7fa035b79c68472c@group.calendar.google.com', color: '#fd59ca', glow: 'rgba(253, 89, 202, 0.6)' },  // NEON PINK
-            { id: 'b25fbf0703934693ab2cf26d7a82669bd8a38b624ca3bf70a9eb46a16ec40799@group.calendar.google.com', color: '#ffff64', glow: 'rgba(255, 255, 100, 0.6)' }, // NEON YELLOW
-            { id: 'd9d2f73203f9382127c1697042669b5d46f2c6ecd297d8f2b28dd295978e4e07@group.calendar.google.com', color: '#6f1cb2', glow: 'rgba(111, 28, 178, 0.6)' }   // NEON VIOLET
+            { id: 's.alshwauva@gmail.com', color: '#ff6d1f', glow: 'rgba(255, 109, 31, 0.6)' },      
+            { id: 'f006951abacb803c0d3ce7f56bad41baf5f8363ac71da5fd5d8258cc5b6f71d5@group.calendar.google.com', color: '#a7f9ac', glow: 'rgba(167, 249, 172, 0.6)' }, 
+            { id: '77cede4471f684268e82629f41d5a5b08e16786a9bc85b81a9938287e37b5bca@group.calendar.google.com', color: '#03b2ed', glow: 'rgba(3, 178, 237, 0.6)' },   
+            { id: '38d540c4f77bf5237793b3cbde8d18fbf23aa34a3bf9161c7fa035b79c68472c@group.calendar.google.com', color: '#fd59ca', glow: 'rgba(253, 89, 202, 0.6)' },  
+            { id: 'b25fbf0703934693ab2cf26d7a82669bd8a38b624ca3bf70a9eb46a16ec40799@group.calendar.google.com', color: '#ffff64', glow: 'rgba(255, 255, 100, 0.6)' }, 
+            { id: 'd9d2f73203f9382127c1697042669b5d46f2c6ecd297d8f2b28dd295978e4e07@group.calendar.google.com', color: '#6f1cb2', glow: 'rgba(111, 28, 178, 0.6)' }   
         ];
 
         async function fetchAllCalendars() {
@@ -151,7 +145,7 @@
                 `;
             });
 
-            container.innerHTML = htmlContent || '<div style="color:rgba(255,255,255,0.2); font-size:10px; letter-spacing:4px;">no signals detected</div>';
+            container.innerHTML = htmlContent || '<div style="color:rgba(255,255,255,0.2); font-size:10px; margin-left:20px; letter-spacing:4px;">no signals detected</div>';
         }
 
         fetchAllCalendars();
