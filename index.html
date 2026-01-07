@@ -3,6 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <style>
+        /* Poppins (Medium 500 & SemiBold 600) */
         @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@500;600&display=swap');
 
         body {
@@ -36,14 +37,14 @@
             /* DARK INK TEXT */
             color: #080808; 
             
-            /* HEAVIER FROSTED LOOK */
+            /* HEAVY FROSTED DEPTH */
             backdrop-filter: blur(20px);
             -webkit-backdrop-filter: blur(20px);
-            border: 1px solid rgba(255, 255, 255, 0.2);
+            border: 1px solid rgba(255, 255, 255, 0.15);
             
             box-shadow: 
                 inset 0 1px 1px rgba(255, 255, 255, 0.1),
-                0 10px 20px rgba(0, 0, 0, 0.4);
+                0 10px 25px rgba(0, 0, 0, 0.45);
             
             width: 320px; 
             box-sizing: border-box;
@@ -53,9 +54,10 @@
 
         .event-link:hover .event-pill {
             transform: translateY(-4px);
-            filter: brightness(1.1);
+            filter: brightness(1.15);
         }
 
+        /* YELLOW SPARKLE ACTIVE TASK */
         .active-task {
             border: 2.5px solid rgba(255, 255, 100, 0.9) !important;
             z-index: 10;
@@ -71,8 +73,9 @@
             font-weight: 500; 
             margin-right: 18px;
             white-space: nowrap;
+            /* Cetacean Blue Time */
             color: #001440; 
-            background: rgba(255, 255, 255, 0.3);
+            background: rgba(255, 255, 255, 0.35);
             padding: 2px 10px;
             border-radius: 7px;
             font-size: 9.5px;
@@ -94,18 +97,18 @@
     <script>
         const API_KEY = 'AIzaSyD0x1_dYTIdaCjAY-mJ_oYwDXXKj8y16R0';
         
-        // DEEP SOLID COLORS FROM YOUR PALETTE (85% Opacity)
+        // CUSTOM RGB PALETTE (90% Opacity)
         const calendarConfigs = [
-            { id: 's.alshwauva@gmail.com', color: 'rgba(41, 14, 122, 0.85)' },      // Deep Outer Rim Indigo
-            { id: 'f006951abacb803c0d3ce7f56bad41baf5f8363ac71da5fd5d8258cc5b6f71d5@group.calendar.google.com', color: 'rgba(9, 158, 169, 0.85)' }, // Aquarium Teal
-            { id: '77cede4471f684268e82629f41d5a5b08e16786a9bc85b81a9938287e37b5bca@group.calendar.google.com', color: 'rgba(111, 28, 178, 0.85)' }, // Fuchsia Nebula
-            { id: '38d540c4f77bf5237793b3cbde8d18fbf23aa34a3bf9161c7fa035b79c68472c@group.calendar.google.com', color: 'rgba(227, 26, 224, 0.85)' }, // Pink Pride
-            { id: 'b25fbf0703934693ab2cf26d7a82669bd8a38b624ca3bf70a9eb46a16ec40799@group.calendar.google.com', color: 'rgba(167, 249, 172, 0.85)' }, // Mint Glow
-            { id: 'd9d2f73203f9382127c1697042669b5d46f2c6ecd297d8f2b28dd295978e4e07@group.calendar.google.com', color: 'rgba(240, 142, 108, 0.85)' }, // Peach Dawn
-            { id: 'CALENDAR_ID_7', color: 'rgba(78, 79, 227, 0.85)' },             // Electric Blue
-            { id: 'CALENDAR_ID_8', color: 'rgba(44, 62, 80, 0.85)' },              // Slate Night
-            { id: 'CALENDAR_ID_9', color: 'rgba(111, 28, 178, 0.75)' },            // Muted Purple
-            { id: 'CALENDAR_ID_10', color: 'rgba(9, 158, 169, 0.75)' }             // Muted Teal
+            { id: 's.alshwauva@gmail.com', color: 'rgba(40, 1, 32, 0.9)' },        
+            { id: 'f006951abacb803c0d3ce7f56bad41baf5f8363ac71da5fd5d8258cc5b6f71d5@group.calendar.google.com', color: 'rgba(69, 0, 99, 0.9)' }, 
+            { id: '77cede4471f684268e82629f41d5a5b08e16786a9bc85b81a9938287e37b5bca@group.calendar.google.com', color: 'rgba(148, 20, 209, 0.9)' }, 
+            { id: '38d540c4f77bf5237793b3cbde8d18fbf23aa34a3bf9161c7fa035b79c68472c@group.calendar.google.com', color: 'rgba(24, 12, 61, 0.9)' }, 
+            { id: 'b25fbf0703934693ab2cf26d7a82669bd8a38b624ca3bf70a9eb46a16ec40799@group.calendar.google.com', color: 'rgba(55, 32, 110, 0.9)' }, 
+            { id: 'd9d2f73203f9382127c1697042669b5d46f2c6ecd297d8f2b28dd295978e4e07@group.calendar.google.com', color: 'rgba(3, 178, 237, 0.9)' }, 
+            { id: 'CALENDAR_ID_7', color: 'rgba(253, 89, 202, 0.9)' },             
+            { id: 'CALENDAR_ID_8', color: 'rgba(186, 110, 220, 0.9)' },          
+            { id: 'CALENDAR_ID_9', color: 'rgba(120, 155, 235, 0.9)' },             
+            { id: 'CALENDAR_ID_10', color: 'rgba(210, 60, 155, 0.9)' }             
         ];
 
         async function fetchAllCalendars() {
