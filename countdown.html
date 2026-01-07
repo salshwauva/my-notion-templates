@@ -8,7 +8,7 @@
         body {
             background-color: transparent;
             margin: 0;
-            padding: 20px; 
+            padding: 30px; 
             font-family: 'Poppins', sans-serif;
             display: flex;
             text-transform: lowercase;
@@ -18,58 +18,61 @@
         .timer-pill {
             display: flex;
             align-items: center;
-            gap: 12px;
-            padding: 6px 14px;
-            border-radius: 8px;
+            gap: 15px;
+            padding: 8px 18px;
+            border-radius: 4px; /* Sharper edges for a technical look */
             width: fit-content;
             white-space: nowrap;
-            
             background-color: transparent;
             
-            /* NEON PEACH BORDER */
-            border: 1.5px solid #f08e6c;
-            
-            /* NEON PEACH GLOW BOX */
-            animation: pulse-glow infinite ease-in-out;
+            /* PURE YELLOW PULSING BORDER */
+            border: 2px solid #ffff64;
+            animation: yellow-pulse infinite ease-in-out;
         }
 
-        @keyframes pulse-glow {
+        @keyframes yellow-pulse {
             0% {
-                box-shadow: 0 0 5px rgba(240, 142, 108, 0.3), inset 0 0 2px rgba(240, 142, 108, 0.2);
+                box-shadow: 0 0 5px #ffff64, inset 0 0 2px #ffff64;
+                border-color: rgba(255, 255, 100, 0.5);
             }
             50% {
-                box-shadow: 0 0 20px rgba(240, 142, 108, 0.6), inset 0 0 5px rgba(240, 142, 108, 0.3);
+                box-shadow: 0 0 25px #ffff64, inset 0 0 10px #ffff64;
+                border-color: rgba(255, 255, 100, 1);
             }
             100% {
-                box-shadow: 0 0 5px rgba(240, 142, 108, 0.3), inset 0 0 2px rgba(240, 142, 108, 0.2);
+                box-shadow: 0 0 5px #ffff64, inset 0 0 2px #ffff64;
+                border-color: rgba(255, 255, 100, 0.5);
             }
         }
 
-        /* PEACH NEON TEXT */
-        .timer-digits {
-            display: flex;
-            align-items: baseline;
-            font-size: 14px;
+        /* HIGH-INTENSITY NEON TEXT */
+        .timer-digits, .timer-label {
+            color: #fff; /* White core for neon effect */
             font-weight: 600;
-            color: #f08e6c; 
+            /* Layered Peach/Orange Glow */
+            text-shadow: 
+                0 0 5px #fff,
+                0 0 10px #f08e6c,
+                0 0 20px #f08e6c,
+                0 0 30px #f08e6c;
+        }
+
+        .timer-digits {
+            font-size: 16px;
             letter-spacing: 1px;
-            text-shadow: 0 0 8px rgba(240, 142, 108, 0.4);
         }
 
         .unit-label {
-            font-size: 9px;
-            font-weight: 500;
-            color: #f08e6c;
-            margin-left: 1px;
-            opacity: 0.8;
+            font-size: 10px;
+            margin-left: 2px;
+            /* Same glow for the 'd' */
+            text-shadow: 0 0 10px #f08e6c;
         }
 
         .timer-label {
-            font-size: 10px;
-            font-weight: 600;
-            letter-spacing: 2.5px;
-            color: #f08e6c;
-            text-shadow: 0 0 8px rgba(240, 142, 108, 0.4);
+            font-size: 11px;
+            letter-spacing: 3px;
+            margin-left: 5px;
         }
     </style>
 </head>
@@ -92,9 +95,9 @@
             const container = document.getElementById('countdown-target');
             const daysLeft = calculateDays(eventData.date);
             
-            let speed = "4s"; 
-            if (daysLeft <= 7) speed = "1.2s";
-            else if (daysLeft <= 30) speed = "2.5s";
+            let speed = "3s"; 
+            if (daysLeft <= 7) speed = "0.8s";
+            else if (daysLeft <= 30) speed = "1.8s";
 
             const pill = document.createElement('div');
             pill.className = 'timer-pill';
