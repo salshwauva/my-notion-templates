@@ -7,13 +7,12 @@
         html, body {
             background-color: transparent; 
             margin: 0;
-            padding: 25px 0px 25px 0px; 
+            padding: 0px; 
             font-family: sans-serif;
             display: flex;
             flex-direction: column;
             gap: 50px; 
             overflow-x: hidden;
-            text-transform: lowercase;
             align-items: flex-start;
         }
 
@@ -24,6 +23,10 @@
             width: fit-content;
             margin: 0;
             transition: transform 0.2s ease-out;
+        }
+
+        .event-link:first-child {
+            margin-top: 10px;
         }
 
         .event-link:hover {
@@ -63,6 +66,7 @@
             to { box-shadow: 0 0 45px #ffff64; }
         }
 
+        /* TIME: LOWERCASE PURPLE */
         .event-time {
             font-family: 'Share Tech Mono', monospace;
             font-size: 14px;
@@ -70,8 +74,10 @@
             letter-spacing: 1px;
             margin-right: 20px;
             white-space: nowrap;
+            text-transform: lowercase; /* Keeps time lowercase */
         }
 
+        /* EVENT NAME: ALL CAPS GRAY */
         .event-name {
             font-family: 'Press Start 2P', cursive;
             font-size: 7px;
@@ -80,6 +86,7 @@
             flex-grow: 1;
             line-height: 1.8;
             word-wrap: break-word;
+            text-transform: uppercase; /* FORCED ALL CAPS */
         }
     </style>
 </head>
@@ -90,7 +97,6 @@
     <script>
         const API_KEY = 'AIzaSyD0x1_dYTIdaCjAY-mJ_oYwDXXKj8y16R0';
         
-        // UPDATED BORDER COLORS
         const calendarConfigs = [
             { id: 's.alshwauva@gmail.com', color: 'rgb(76, 93, 215)', glow: 'rgba(76, 93, 215, 0.4)' },
             { id: 'f006951abacb803c0d3ce7f56bad41baf5f8363ac71da5fd5d8258cc5b6f71d5@group.calendar.google.com', color: 'rgb(194, 49, 201)', glow: 'rgba(194, 49, 201, 0.4)' },
@@ -111,7 +117,7 @@
                     const data = await response.json();
                     return (data.items || []).map(event => ({
                         ...event,
-                        summary: (event.summary || "private").toLowerCase(),
+                        summary: (event.summary || "private"),
                         borderColor: config.color,
                         glowColor: config.glow
                     }));
@@ -146,7 +152,7 @@
                 `;
             });
 
-            container.innerHTML = htmlContent || '<div style="color:rgba(255,255,255,0.2); font-size:10px;">no signals detected</div>';
+            container.innerHTML = htmlContent || '<div style="color:rgba(255,255,255,0.2); font-size:10px;">NO SIGNALS DETECTED</div>';
         }
 
         fetchAllCalendars();
